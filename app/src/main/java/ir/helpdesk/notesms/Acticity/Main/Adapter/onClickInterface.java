@@ -1,4 +1,4 @@
-package ir.helpdesk.notesms.Adapter;
+package ir.helpdesk.notesms.Acticity.Main.Adapter;
 
 import android.view.View;
 

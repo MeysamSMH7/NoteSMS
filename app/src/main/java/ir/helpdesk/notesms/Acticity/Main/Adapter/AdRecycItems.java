@@ -1,4 +1,4 @@
-package ir.helpdesk.notesms.Adapter;
+package ir.helpdesk.notesms.Acticity.Main.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ir.helpdesk.notesms.DataBase.Tables.tb_Bills;

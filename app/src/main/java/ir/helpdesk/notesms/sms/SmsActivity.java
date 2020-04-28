@@ -61,6 +61,10 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
         smsListView.setAdapter(arrayAdapter);
         smsListView.setOnItemClickListener(this);
 
+
+
+
+
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.SEND_SMS,
                 Manifest.permission.READ_SMS,

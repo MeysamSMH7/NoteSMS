@@ -1,4 +1,4 @@
-package ir.helpdesk.notesms.Fragment;
+package ir.helpdesk.notesms.Acticity.Main.Fragment;
 
 
 import android.os.Bundle;
@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import ir.helpdesk.notesms.Adapter.AdRecycItems;
-import ir.helpdesk.notesms.Adapter.onClickInterface;
+import ir.helpdesk.notesms.Acticity.Main.Adapter.AdRecycItems;
+import ir.helpdesk.notesms.Acticity.Main.Adapter.onClickInterface;
 import ir.helpdesk.notesms.DataBase.Tables.tb_Bills;
 import ir.helpdesk.notesms.R;
 
@@ -37,24 +37,6 @@ public class frTab_item extends Fragment {
         View view = inflater.inflate(R.layout.fr_tab_main, container, false);
         ArrayList<tb_Bills> arrayList = (ArrayList<tb_Bills>) getArguments().getSerializable("list");
 
-        ListView lstItems = view.findViewById(R.id.lstItems);
-        ArrayList<String> smsMessagesList = new ArrayList<String>();
-
-        for (int i = 0; i < arrayList.size(); i++) {
-            tb_Bills tb_bills = arrayList.get(i);
-            String str = "پیامک از طرف: " + tb_bills.senderSMS
-                    + "\n" + "تاریخ دریافت" + tb_bills.dateSMSJalali
-                    + "\n" + "متن پیام:" + tb_bills.txtSMS
-                    + "\n" + "کلید:" + tb_bills.PK_key
-                    + "\n\n" + "متن نوت:" + tb_bills.txtNote
-                    + "\n" + "تاریخ یادداشت:" + tb_bills.dateNoteMiladi
-                    + "\n";
-            smsMessagesList.add(str);
-        }
-
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, smsMessagesList);
-        lstItems.setAdapter(arrayAdapter);
-
 
         RecyclerView recycle = view.findViewById(R.id.recycle);
         AdRecycItems adRecycItems = new AdRecycItems(getContext(), arrayList, new onClickInterface() {
@@ -66,12 +48,6 @@ public class frTab_item extends Fragment {
             }
         });
         recycle.setAdapter(adRecycItems);
-
-
-
-
-
-
 
         return view;
     }
