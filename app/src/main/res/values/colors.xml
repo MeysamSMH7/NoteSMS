@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#0DC3B2</color>
+    <color name="colorLogo">#000000</color>
+    <color name="colorPrimaryDark">#0DC3B2</color>
+    <color name="colorAccent">#000000</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorGreen">#25c24f</color>
+    <color name="colorBlue">#62bdfc</color>
+    <color name="colorBlue2">#154c7a</color>
+    <color name="colorIndigo">#4b0082</color>
+    <color name="colorPink">#FFC0CB</color>
+    <color name="colorYellow">#ffff00</color>
+    <color name="colorRed">#ff0011</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGray">#71878C</color>
+    <color name="colorGray2">#6c6c6c</color>
+    <color name="colorGray3">#E2E2E3</color>
+    <color name="colorBlack1">#40000000</color>
+    <color name="colorBlack2">#7F000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent2">#00a4a4a4</color>
+    <color name="transparent3">#47746f6f</color>
+    <color name="colorYellow2">#E2E21F</color>
+    <color name="colorLoginRegister1">#2e858f</color>
+    <color name="colorLoginRegister3">#c7edf0f1</color>
+    <color name="colorPurple2">#0DC3B2</color>
+    <color name="colorPurple">#0DC3B2</color>
+    <color name="colorPurple3">#0DC3B2</color>
+    <color name="colorPurple4">#23161D</color>
+    <color name="colorPurple5">#531B42</color>
+    <color name="colorPurple6">#0DC3B2</color>
+    <color name="colorPurple7">#684181</color>
+    <color name="colorPink2">#C6779B</color>
+    <color name="colorChat1">#182533</color>
+    <color name="colorChat2">#684181</color>
+    <color name="colorHider">#13919191</color>
+    <color name="complementaryColor">#157a43</color>
+    <color name="colorOrange">#F05228</color>
+    <color name="colorYellow3">#FFF78B</color>
+
+    <color name="colorBlueBtn">#00ADC1</color>
+    <color name="colorIcons">#0DC3B2</color>
+
+    <array name="array_dark_inactive">
+        <item>#f98da5</item>
+        <item>#8cf9eb</item>
+        <item>#93c6fd</item>
+        <item>#FFC28B</item>
+    </array>
+
+    <array name="array_light_active">
+        <item>#0DC3B2</item>
+        <item>#14a895</item>
+        <item>#2278d4</item>
+        <item>#AF681F</item>
+    </array>
+
+    <color name="medium_blue">#0000CD</color>
+    <color name="dim_gray">#696969</color>
+    <color name="tan">#D2B48C</color>
+    <color name="colorRed2">#a40711</color>
+    <color name="colorRed3">#A71B1B</color>
+
+
+    <color name="colorButton">#7a154c</color>
+    <color name="colorWaring">#dcc44d</color>
+    <color name="colorOk">#45cf7f</color>
+    <color name="colorError">#b13b3b</color>
+
+    <color name="dark_colors_1">#154c7a</color>
+    <color name="dark_colors_2">#FFF78B</color>
+    <color name="dark_colors_3">#157a43</color>
+    <color name="dark_colors_4">#7a154c</color>
+    <color name="dark_colors_5">#8DEBFF</color>
+
+
+    <color name="light_colors_1">#21e6c1</color>
+    <color name="light_colors_2">#a7d129</color>
+    <color name="light_colors_3">#df69a8</color>
+    <color name="light_colors_4">#e1e099</color>
+    <color name="light_colors_5">#ff5722</color>
+
+    <color name="colorFinish">#E94335</color>
+    <color name="colorNoFinish">#39AB17</color>
+
+    <color name="mdtp_accent_color">#009688</color>
+    <color name="mdtp_accent_color_dark">#00796b</color>
+
+</resources>
