@@ -1,12 +1,16 @@
 package ir.helpdesk.notesms.Acticity.Main;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Parcel;
@@ -15,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
@@ -79,6 +84,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
     private SharedPreferences preferences;
     private ArrayList arrayListTitle;
     private ArrayList arrayListPhoneNum;
+    private AlertDialog alertDialogLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,15 +100,27 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        getSMSFromInbox();
+        loading();
         findViews();
         changeTabsFont(tl_tabLayout);
-        initViewPager();
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("FirstTime?", false);
         editor.apply();
 
+        if (Build.VERSION.SDK_INT > 23)
+            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS,
+                    Manifest.permission.BIND_TELECOM_CONNECTION_SERVICE, Manifest.permission.BROADCAST_SMS}, 1);
+        else
+            getSMSFromInbox();
+
+        if (Build.VERSION.SDK_INT > 23) {
+            String requiredPermission = android.Manifest.permission.SEND_SMS;
+            int checkVal = checkCallingOrSelfPermission(requiredPermission);
+            if (checkVal == PackageManager.PERMISSION_GRANTED) {
+                getSMSFromInbox();
+            }
+        }
 
     }
 
@@ -112,7 +130,6 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
         tl_tabLayout = (TabLayout) findViewById(R.id.tl_tabLayout);
         vp_viewPager = (ViewPager) findViewById(R.id.vp_viewPager);
 
-        tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());
 
     }
 
@@ -134,12 +151,12 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
         }
     }
 
-    private ArrayList<tb_Bills> getCustomData(String phonNum) {
+    private ArrayList<tb_Bills> getCustomData(String phoneNum) {
 
         ArrayList<tb_Bills> bills = new ArrayList<>();
         for (int i = 0; i < tb_billsList.size(); i++) {
             tb_Bills tbBills = tb_billsList.get(i);
-            if (tbBills.senderSMS.equals(phonNum))
+            if (tbBills.senderSMS.equals(phoneNum))
                 bills.add(tbBills);
         }
         return bills;
@@ -147,6 +164,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
 
     private void initViewPager() {
 
+        tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());
         arrayListTitle = new ArrayList();
         arrayListPhoneNum = new ArrayList();
 
@@ -268,6 +286,40 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getSMSFromInbox();
+            } else {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("رد کردن دسترسی");
+                builder.setMessage("این برنامه نیاز به دسترسی به پیامک های شما رو داره");
+                builder.setPositiveButton("درخواست دوباره", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(Activity_Main_NoteSMS.this, new String[]{
+                                Manifest.permission.SEND_SMS,
+                                Manifest.permission.READ_SMS,
+                                Manifest.permission.BIND_TELECOM_CONNECTION_SERVICE,
+                                Manifest.permission.BROADCAST_SMS}, 1);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("بستن برنامه", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+                builder.create();
+                builder.show();
+            }
+        }
+    }
+
     //----------------- filter
     private AlertDialog alertDialogFilterPhone;
     private AdRecyclFilterPhone adRecycPopUp;
@@ -315,24 +367,23 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
                 String titlePH = txttitle.getText().toString();
                 String id = txtId.getText().toString();
 
-
                 String titles = preferences.getString("titles", "");
                 String phoneNum = preferences.getString("phoneNum", "");
 
                 if (!arrayListPhoneNum.contains(titlePH)) {
 
                     if (!titlePH.equals("") && !titles.contains(titlePH)) {
-                        titlePH += ","+titles;
+                        titlePH += "," + titles;
 //                        title += phoneNum;
 
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putString("titles", titlePH);
-                        editor.putString("phoneNum", titlePH);
+                        editor.putString("phoneNum", id);
                         editor.apply();
                         alertDialogFilterPhone.dismiss();
                         initViewPager();
 
-                    }else
+                    } else
                         Toast.makeText(context, "این رو قبلا زدی", Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(context, "چنین شماره ای وجود داره", Toast.LENGTH_SHORT).show();
@@ -362,10 +413,26 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
 
     }
 
+    private void loading() {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setCancelable(false);
+            LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.loading, null, false);
+
+            builder.setView(layout);
+            alertDialogLoading = builder.create();
+            alertDialogLoading.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //----------------------------------------------- SMS
 
     public void getSMSFromInbox() {
 
+        alertDialogLoading.show();
         ContentResolver contentResolver = getContentResolver();
         Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"),
                 null, null, null, null);
@@ -383,7 +450,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
                 String key = smsInboxCursor.getString(date);
                 Date smsDayTime = new Date(Long.valueOf(key));
 
-                Log.i("ASDF =========> ", smsInboxCursor.getString(indexAddress) + "");
+//                Log.i("ASDF =========> ", smsInboxCursor.getString(indexAddress) + "");
 //                String str = "SMS From: " + smsInboxCursor.getString(indexAddress) +
 //                        "\n" + smsInboxCursor.getString(indexBody) +
 //                        "\n" + smsDayTime +
@@ -412,6 +479,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
                     source.Add(tb_bills);
             }
         } while (smsInboxCursor.moveToNext());
+        initViewPager();
 
     }
 
