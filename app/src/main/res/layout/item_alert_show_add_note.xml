@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:layoutDirection="ltr"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_greywhite_corner"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorLogo"
+            android:textColor="@color/colorWhite">
+
+            <TextView
+                android:id="@+id/txtSMessage_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1"
+                android:gravity="center"
+                android:textColor="@color/colorWhite"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp">
+
+            <EditText
+                android:id="@+id/edtSMessage_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPurple7"
+                android:gravity="right"
+                android:paddingEnd="7dp"
+                android:textColor="@color/colorPurple7"
+                android:textCursorDrawable="@color/colorPurple7" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginBottom="9dp"
+            android:orientation="horizontal"
+            android:padding="7dp">
+
+            <LinearLayout
+                android:id="@+id/linearSMessage_NO"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="0.5"
+                android:background="@drawable/selector_button_ds">
+
+                <Button
+                    android:id="@+id/btnSMessage_NO"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:text="بستن"
+                    android:theme="@style/selectorButton" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearSMessage_OK"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="2dp"
+                android:layout_weight="0.5"
+                android:background="@drawable/selector_button_ds">
+
+                <Button
+                    android:id="@+id/btnSMessage_OK"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:text="ذخیره کردن"
+                    android:theme="@style/selectorButton" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

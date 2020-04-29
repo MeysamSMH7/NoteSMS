@@ -24,7 +24,7 @@ public class AdRecyclFilterPhone extends RecyclerView.Adapter<AdRecyclFilterPhon
     private Context context;
     private List<ModFilterPhone> data;
     private int lastPosition = -1;
-    private onClickInterface onClickInterface;
+    private ir.helpdesk.notesms.Acticity.Main.Adapter.onClickInterface onClickInterface;
     private ArrayList<ModFilterPhone> arraylist;
 
     public AdRecyclFilterPhone(Context context, List<ModFilterPhone> data, onClickInterface onClickInterface) {
@@ -46,7 +46,6 @@ public class AdRecyclFilterPhone extends RecyclerView.Adapter<AdRecyclFilterPhon
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         try {
 
-
             Animation animation = AnimationUtils.loadAnimation(context, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
             holder.itemView.startAnimation(animation);
             lastPosition = position;
@@ -57,8 +56,7 @@ public class AdRecyclFilterPhone extends RecyclerView.Adapter<AdRecyclFilterPhon
             holder.txtTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onClickInterface.setClick(position, holder.itemView);
-//                    onClickInterface.setClick(data.get(position).getTitle(),data.get(position).getId());
+                    onClickInterface.setClick(position, holder.itemView, null);
                 }
             });
 

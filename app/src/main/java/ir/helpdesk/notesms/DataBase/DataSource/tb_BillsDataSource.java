@@ -109,7 +109,8 @@ public class tb_BillsDataSource {
         return data;
     }
 
-    public tb_Bills GetRecord(String id) {
+    public tb_Bills GetARecord(String id) {
+        Open();
         Cursor cursor = database.query(tb_BillsStructure.tableName, allColumns,
                 tb_BillsStructure.PK_key + "= '" + id + "'",
                 null, null, null, null);
@@ -122,6 +123,7 @@ public class tb_BillsDataSource {
 
         tb_Bills data = ConvertToRecord(cursor);
         cursor.close();
+        Close();
         return data;
     }
 

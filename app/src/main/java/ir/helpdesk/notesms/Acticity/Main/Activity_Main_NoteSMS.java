@@ -13,8 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
-import android.os.Parcel;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -43,18 +41,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import ir.helpdesk.notesms.Acticity.Main.Adapter.AdRecyclFilterPhone;
 import ir.helpdesk.notesms.Acticity.Main.Adapter.ViewPagerAdapterMain;
@@ -66,8 +59,7 @@ import ir.helpdesk.notesms.Acticity.Main.Fragment.frTab_item;
 import ir.helpdesk.notesms.Acticity.Main.Fragment.frTab_search;
 import ir.helpdesk.notesms.R;
 
-public class Activity_Main_NoteSMS extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class Activity_Main_NoteSMS extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Context context = this;
     private Toolbar toolbar;
@@ -75,7 +67,6 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
     private TabLayout tl_tabLayout;
     private ViewPager vp_viewPager;
     private List<Fragment> fragments;
-//    private int[] tabIcons = {R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher};
 
     private static final int Time_Between_Two_Back = 2000;
     private long TimeBackPressed;
@@ -349,6 +340,17 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
         lhs.addAll(arrayList);
         arrayList.clear();
         arrayList.addAll(lhs);
+
+        String[] titles = preferences.getString("titles", "").split(",");
+
+//        if (!titles[0].equals("")) {
+//            ArrayList titlesArr = new ArrayList();
+//            for (int i = 0; i < titles.length; i++)
+//                titlesArr.add(titles[i] + "");
+//
+//            arrayList.retainAll(titlesArr);
+//        }
+
         for (int i = 0; i < arrayList.size(); i++) {
             ModFilterPhone modAlerts = new ModFilterPhone(
                     arrayList.get(i) + "",
@@ -360,7 +362,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
         RecyclerView recycFitler = layout.findViewById(R.id.recycFitler);
         adRecycPopUp = new AdRecyclFilterPhone(context, arraylistSearchView, new onClickInterface() {
             @Override
-            public void setClick(int position, View view) {
+            public void setClick(int position, View view, String s) {
 
                 TextView txttitle = ((LinearLayout) view).findViewById(R.id.txtTitle);
                 TextView txtId = ((LinearLayout) view).findViewById(R.id.txtId);
@@ -374,6 +376,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
 
                     if (!titlePH.equals("") && !titles.contains(titlePH)) {
                         titlePH += "," + titles;
+                        id += "," + phoneNum;
 //                        title += phoneNum;
 
                         SharedPreferences.Editor editor = preferences.edit();
@@ -460,7 +463,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
                 tb_Bills tb_bills = new tb_Bills();
 
                 String dateMiladi = convertDate(smsDayTime.toString());
-                String[] dateSamsiArr = dateMiladi.split("/");
+                String[] dateSamsiArr = dateMiladi.split("-");
                 CalendarTool tool = new CalendarTool();
                 tool.setGregorianDate(Integer.parseInt(dateSamsiArr[0]), Integer.parseInt(dateSamsiArr[1]), Integer.parseInt(dateSamsiArr[2]));
                 String dataSamsi = tool.getIranianDate();
@@ -480,6 +483,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
             }
         } while (smsInboxCursor.moveToNext());
         initViewPager();
+        alertDialogLoading.dismiss();
 
     }
 
@@ -517,7 +521,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity
         else if (month.equals("Dec"))
             numberMonth = "12";
 
-        dateMiladi = year + "/" + numberMonth + "/" + day;
+        dateMiladi = year + "-" + numberMonth + "-" + day;
 
         return dateMiladi;
     }

@@ -222,7 +222,7 @@ public class CalendarTool {
      * @return String
      */
     public String getGregorianDate() {
-        return (gYear + "-" + gMonth + "-" + gDay);
+        return (gYear + "/" + gMonth + "/" + gDay);
     }
 
     /**
