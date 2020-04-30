@@ -2,6 +2,7 @@ package ir.helpdesk.notesms.Classes;
 
 
 import android.app.FragmentManager;
+
 import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerDialog;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
@@ -25,7 +26,19 @@ public class getDate {
                                      monthOfYear++;
                                      CalendarTool tool = new CalendarTool();
                                      tool.setIranianDate(year, monthOfYear, dayOfMonth);
-                                     String dateMiladi = tool.getGregorianYear() + "-" + tool.getGregorianMonth() + "-" + tool.getGregorianDay() + "";
+                                     String monthMiladi = "";
+                                     if (!(tool.getGregorianMonth() >= 10))
+                                         monthMiladi = "0" + tool.getGregorianMonth();
+                                     else
+                                         monthMiladi = tool.getGregorianMonth() + "";
+
+                                     String dayMiladi = "";
+                                     if (!(tool.getGregorianDay() >= 10))
+                                         dayMiladi = "0" + tool.getGregorianDay();
+                                     else
+                                         dayMiladi = tool.getGregorianDay() + "";
+
+                                     String dateMiladi = tool.getGregorianYear() + "-" + monthMiladi + "-" + dayMiladi + "";
                                      String dateJalali = year + "/" + monthOfYear + "/" + dayOfMonth + "";
                                      OnResponse.OnResponse(dateJalali, dateMiladi);
 

@@ -20,9 +20,9 @@ public class tb_BillsStructure {
             senderSMS + " text, " +
             txtNote + " text, " +
             dateSMSMiladi + " current_date, " +
-            dateSMSJalali + " dateSMSJalali, " +
+            dateSMSJalali + " text, " +
             dateNoteMiladi + " current_date, " +
-            dateNoteJalali + " current_date, " +
+            dateNoteJalali + " text, " +
             temp + " text" +
             ")";
 }

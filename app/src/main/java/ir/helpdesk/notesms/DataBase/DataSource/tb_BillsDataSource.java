@@ -215,9 +215,11 @@ public class tb_BillsDataSource {
                 }
             }
         }
+
         Cursor cursor = database.query(tb_BillsStructure.tableName,
                 allColumns,
-                query, null, null, null,
+                query,
+                null, null, null,
                 tb_BillsStructure.dateSMSMiladi + " DESC");
         cursor.moveToFirst();
 

@@ -143,7 +143,6 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
     }
 
     private ArrayList<tb_Bills> getCustomData(String phoneNum) {
-
         ArrayList<tb_Bills> bills = new ArrayList<>();
         for (int i = 0; i < tb_billsList.size(); i++) {
             tb_Bills tbBills = tb_billsList.get(i);
@@ -446,6 +445,9 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 
         tb_BillsDataSource source = new tb_BillsDataSource(context);
 
+        int counter = 0;
+        boolean ifBreak = false;
+
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
         do {
             String typeee = smsInboxCursor.getString(type);
@@ -477,6 +479,18 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
                 tb_bills.dateNoteMiladi = "";
                 tb_bills.dateNoteJalali = "";
                 tb_bills.temp = "";
+
+
+                if (counter == 0) {
+                    tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());
+                    if (tb_billsList.size() != 0)
+                        if (key.equals(tb_billsList.get(0).PK_key))
+                            ifBreak = true;
+                }
+                counter++;
+
+                if (ifBreak)
+                    break;
 
                 if (source.isARecordExist(key))
                     source.Add(tb_bills);

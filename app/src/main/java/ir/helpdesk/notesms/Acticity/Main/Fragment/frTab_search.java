@@ -1,7 +1,9 @@
 package ir.helpdesk.notesms.Acticity.Main.Fragment;
 
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -14,8 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ir.helpdesk.notesms.Acticity.Main.Adapter.AdRecyclFilterPhone;
 import ir.helpdesk.notesms.Acticity.Main.Adapter.onClickInterface;
 import ir.helpdesk.notesms.Acticity.Main.Fragment.Adapter.AdRecycItems;
+import ir.helpdesk.notesms.Acticity.Main.ModFilterPhone;
 import ir.helpdesk.notesms.Classes.getDate;
 import ir.helpdesk.notesms.DataBase.DataSource.tb_BillsDataSource;
 import ir.helpdesk.notesms.DataBase.Structure.tb_BillsStructure;
@@ -47,6 +51,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class frTab_search extends Fragment {
@@ -75,6 +80,7 @@ public class frTab_search extends Fragment {
     private String dateMiladi = "";
     private String dateMiladiStart = "";
     private String dateMiladiEnd = "";
+    private String dateJalali = "";
 
     private List<tb_Bills> list;
 
@@ -147,6 +153,7 @@ public class frTab_search extends Fragment {
                         linearFrSearch_DateMulti.setVisibility(View.VISIBLE);
                         linearFrSearch_DateSingle.setVisibility(View.GONE);
                         dateMiladi = "";
+                        dateJalali = "";
                         txtFrSearch_DateSingle.setText("انتخاب تاریخ");
                         txtFrSearch_Date2Single.setText("");
 
@@ -170,9 +177,17 @@ public class frTab_search extends Fragment {
 
     private void doSearch() {
 
-        if ( TextUtils.isEmpty(edtFrSearch_FullName.getText()) &&
-                TextUtils.isEmpty(edtFrSearch_Phone.getText()) && dateMiladi.equals("") &&
-                dateMiladiStart.equals("") && dateMiladiEnd.equals("") && dateMiladiStart.equals("") && !dateMiladiEnd.equals("")) {
+        if (
+                TextUtils.isEmpty(edtFrSearch_FullName.getText()) &&
+                        TextUtils.isEmpty(edtFrSearch_Phone.getText()) &&
+                        TextUtils.isEmpty(txtFrSearch_Date2Single.getText()) &&
+                        dateMiladi.equals("") &&
+                        dateMiladiStart.equals("") &&
+                        dateMiladiEnd.equals("") &&
+                        dateMiladiStart.equals("") &&
+                        dateJalali.equals("") &&
+                        !dateMiladiEnd.equals("")
+        ) {
             Toast.makeText(getContext(), "لطفا یک فیلد را پر کنید" + "", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -188,8 +203,8 @@ public class frTab_search extends Fragment {
         if (!(TextUtils.isEmpty(edtFrSearch_Phone.getText()))) {
             arrayList.add(tb_BillsStructure.senderSMS + " = '" + edtFrSearch_Phone.getText().toString() + "'");
         }
-        if (!dateMiladi.equals("")) {
-            arrayList.add(tb_BillsStructure.dateSMSMiladi + " = '" + dateMiladi + "'");
+        if (!dateJalali.equals("")) {
+            arrayList.add(tb_BillsStructure.dateSMSJalali + "='" + dateJalali + "'"); // its jalali :| La hes to edit :|
         }
         if (!dateMiladiStart.equals("") && !dateMiladiEnd.equals("")) {
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" + dateMiladiStart + "' AND '" + dateMiladiEnd + "'");
@@ -307,7 +322,7 @@ public class frTab_search extends Fragment {
                 new getDate(getActivity().getFragmentManager()).getDate(new getDate.OnResponse() {
                     @Override
                     public void OnResponse(String persian, String miladi) {
-                        dateMiladi = miladi;
+                        dateJalali = persian;
                         txtFrSearch_DateSingle.setText("تاریخ انتخاب شده:");
                         txtFrSearch_Date2Single.setText(persian);
                     }
@@ -355,6 +370,16 @@ public class frTab_search extends Fragment {
         }
 
         list = new ArrayList<>();
+
+        ImageView imgListContacts = view.findViewById(R.id.imgListContacts);
+        imgListContacts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialogFilterPhone();
+            }
+        });
+
+
     }
 
     @Override
@@ -376,6 +401,85 @@ public class frTab_search extends Fragment {
         }
 
         view.setVisibility(View.VISIBLE);
+    }
+
+    // --------------- list ListContacts
+    private AlertDialog alertDialogFilterPhone;
+
+    private void alertDialogFilterPhone() {
+        final AdRecyclFilterPhone adRecycPopUp;
+        final androidx.appcompat.widget.SearchView editsearchSearchView;
+        List<ModFilterPhone> arraylistSearchView = new ArrayList<ModFilterPhone>();
+        ArrayList<tb_Bills> tb_billsList = new ArrayList<>(new tb_BillsDataSource(getContext()).GetList());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_listview_chooser, null, false);
+
+        Button btnFr = layout.findViewById(R.id.btnFr);
+        btnFr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialogFilterPhone.dismiss();
+            }
+        });
+
+        if (arraylistSearchView.size() != 0)
+            arraylistSearchView.clear();
+        ArrayList arrayList = new ArrayList();
+
+        for (int i = 0; i < tb_billsList.size(); i++)
+            arrayList.add(tb_billsList.get(i).senderSMS);
+
+        LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+        lhs.addAll(arrayList);
+        arrayList.clear();
+        arrayList.addAll(lhs);
+
+
+        for (int i = 0; i < arrayList.size(); i++) {
+            ModFilterPhone modAlerts = new ModFilterPhone(
+                    arrayList.get(i) + "",
+                    arrayList.get(i) + "");
+            arraylistSearchView.add(modAlerts);
+        }
+
+
+        RecyclerView recycFitler = layout.findViewById(R.id.recycFitler);
+        adRecycPopUp = new AdRecyclFilterPhone(getContext(), arraylistSearchView, new onClickInterface() {
+            @Override
+            public void setClick(int position, View view, String s) {
+
+                TextView txttitle = ((LinearLayout) view).findViewById(R.id.txtTitle);
+                TextView txtId = ((LinearLayout) view).findViewById(R.id.txtId);
+                String titlePH = txttitle.getText().toString();
+                String id = txtId.getText().toString();
+
+                edtFrSearch_Phone.setText(id + "");
+                alertDialogFilterPhone.dismiss();
+            }
+        });
+        recycFitler.setAdapter(adRecycPopUp);
+
+        editsearchSearchView = layout.findViewById(R.id.searchFr);
+        editsearchSearchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                String text = newText;
+                adRecycPopUp.filter(text);
+                return true;
+            }
+        });
+
+        builder.setView(layout);
+        alertDialogFilterPhone = builder.create();
+        alertDialogFilterPhone.show();
+        alertDialogFilterPhone.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
     }
 
 }
