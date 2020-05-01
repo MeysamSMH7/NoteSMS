@@ -17,7 +17,6 @@
         android:layout_margin="7dp"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone"
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,7 +24,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.987"
         app:srcCompat="@drawable/icon_search" />
-
 
     <LinearLayout
         android:id="@+id/linearSearch"
@@ -69,7 +67,8 @@
                 android:layout_margin="3dp"
                 android:background="@drawable/bg_greywhite_corner"
                 android:orientation="vertical"
-                android:padding="7dp">
+                android:padding="7dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -271,6 +270,28 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/relatFrDeleteSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="7dp">
+
+        <ImageView
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:src="@drawable/circle" />
+
+        <ImageView
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:padding="17dp"
+            android:src="@drawable/icon_delete" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/relatFrSearch"

@@ -1,8 +1,6 @@
 package ir.helpdesk.notesms.Acticity.Main.Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import ir.helpdesk.notesms.Acticity.Main.Adapter.onClickInterface;
+import ir.helpdesk.notesms.Acticity.Setting.Adapter.onClickInterface;
 import ir.helpdesk.notesms.Acticity.Main.Fragment.Adapter.AdRecycItems;
 import ir.helpdesk.notesms.DataBase.Tables.tb_Bills;
 import ir.helpdesk.notesms.R;
 
 public class frTab_item extends Fragment {
 
+  private   AdRecycItems adRecycItems;
 
     public static frTab_item newInstance(ArrayList<tb_Bills> tb_bills) {
         Bundle args = new Bundle();
@@ -29,7 +28,6 @@ public class frTab_item extends Fragment {
         return fragment;
 
     }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,23 +35,10 @@ public class frTab_item extends Fragment {
         ArrayList<tb_Bills> arrayList = (ArrayList<tb_Bills>) getArguments().getSerializable("list");
 
         RecyclerView recycle = view.findViewById(R.id.recycle);
-        AdRecycItems adRecycItems = new AdRecycItems(getContext(), arrayList, new onClickInterface() {
+         adRecycItems = new AdRecycItems(getContext(), arrayList, new onClickInterface() {
             @Override
             public void setClick(int position, View view, final String id) {
-
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = getActivity().getIntent();
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        getActivity().overridePendingTransition(0, 0);
-                        getActivity().finish();
-
-                        getActivity().overridePendingTransition(0, 0);
-                        startActivity(intent);
-                    }
-                });
-
+                adRecycItems.notifyDataSetChanged();
             }
         });
         recycle.setAdapter(adRecycItems);

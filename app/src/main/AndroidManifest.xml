@@ -8,6 +8,10 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="true" />
+
     <application
         android:name=".Classes.BaseActivity"
         android:allowBackup="true"
@@ -16,6 +20,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Acticity.Setting.Activity_Setting_NoteSMS">
+            <!--             <intent-filter>-->
+            <!--             <action android:name="android.intent.action.MAIN" />-->
+            <!--             <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--             </intent-filter>-->
+        </activity>
         <activity
             android:name=".Acticity.Main.Activity_Main_NoteSMS"
             android:theme="@style/AppTheme.NoActionBar">
@@ -27,10 +37,12 @@
         <activity
             android:name=".sms.SmsActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
     </application>
+
 </manifest>

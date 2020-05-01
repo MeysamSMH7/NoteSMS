@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -33,12 +34,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.Menu;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,12 +45,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 
-import ir.helpdesk.notesms.Acticity.Main.Adapter.AdRecyclFilterPhone;
 import ir.helpdesk.notesms.Acticity.Main.Adapter.ViewPagerAdapterMain;
-import ir.helpdesk.notesms.Acticity.Main.Adapter.onClickInterface;
+import ir.helpdesk.notesms.Acticity.Setting.Activity_Setting_NoteSMS;
 import ir.helpdesk.notesms.Classes.CalendarTool;
 import ir.helpdesk.notesms.DataBase.DataSource.tb_BillsDataSource;
 import ir.helpdesk.notesms.DataBase.Tables.tb_Bills;
@@ -66,15 +63,12 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 
     private TabLayout tl_tabLayout;
     private ViewPager vp_viewPager;
-    private List<Fragment> fragments;
 
     private static final int Time_Between_Two_Back = 2000;
     private long TimeBackPressed;
     private ArrayList<tb_Bills> tb_billsList;
 
     private SharedPreferences preferences;
-    private ArrayList arrayListTitle;
-    private ArrayList arrayListPhoneNum;
     private AlertDialog alertDialogLoading;
 
     @Override
@@ -118,10 +112,9 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
     private void findViews() {
         preferences = getSharedPreferences("TuRn", 0);
         toolbar = findViewById(R.id.toolbar);
-        tl_tabLayout = (TabLayout) findViewById(R.id.tl_tabLayout);
-        vp_viewPager = (ViewPager) findViewById(R.id.vp_viewPager);
 
-
+        tl_tabLayout = findViewById(R.id.tl_tabLayout);
+        vp_viewPager = findViewById(R.id.vp_viewPager);
     }
 
     protected void changeTabsFont(TabLayout tabLayout) {
@@ -152,58 +145,61 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         return bills;
     }
 
+    ViewPagerAdapterMain viewPagerAdapterMain;
+
     private void initViewPager() {
 
         tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());
-        arrayListTitle = new ArrayList();
-        arrayListPhoneNum = new ArrayList();
 
-        arrayListTitle.add("همه");
-        arrayListTitle.add("جستجو");
+        String defaultTabs = "جستجو,همه";
 
-        String titles[] = preferences.getString("titles", "")
-                .split(",");
-        String phoneNum[] = preferences.getString("phoneNum", "")
-                .split(",");
+        String titlesPre = preferences.getString("titles", "");
+        String[] titles;
 
-        if (!titles[0].equals("")) {
-            for (int i = 0; i < titles.length; i++)
-                arrayListTitle.add(titles[i]);
-            for (int i = 0; i < phoneNum.length; i++)
-                arrayListPhoneNum.add(titles[i]);
+
+        if (titlesPre.equals(""))
+            titles = defaultTabs.split(",");
+        else {
+            String temp = defaultTabs + "," + titlesPre;
+            titles = temp.split(",");
         }
-        fragments = new ArrayList<>();
 
-        fragments.add(frTab_item.newInstance(tb_billsList));
+
+        List<Fragment> fragments = new ArrayList<>();
+
         fragments.add(frTab_search.newInstance());
+        fragments.add(frTab_item.newInstance(tb_billsList));
 
-        for (int i = 0; i < arrayListPhoneNum.size(); i++)
-            fragments.add(frTab_item.newInstance(getCustomData(arrayListPhoneNum.get(i) + "")));
+        if (!titlesPre.equals(""))
+            for (int i = 2; i < titles.length; i++) {
+                String title = titles[i] + "";
+                ArrayList<tb_Bills> bills = getCustomData(title);
+                fragments.add(frTab_item.newInstance(bills));
+            }
 
-        ViewPagerAdapterMain adapter = new ViewPagerAdapterMain(getSupportFragmentManager(), fragments, arrayListTitle);
-        vp_viewPager.setAdapter(adapter);
+        viewPagerAdapterMain = new ViewPagerAdapterMain(getSupportFragmentManager(), fragments, titles);
+        vp_viewPager.setAdapter(viewPagerAdapterMain);
         tl_tabLayout.setupWithViewPager(vp_viewPager);
-        int limit = (adapter.getCount() > 1 ? adapter.getCount() - 1 : 1);
+        int limit = (viewPagerAdapterMain.getCount() > 1 ? viewPagerAdapterMain.getCount() - 1 : 1);
         vp_viewPager.setOffscreenPageLimit(limit);
-        vp_viewPager.setCurrentItem(0);
+        vp_viewPager.setCurrentItem(1);
+        customIcon(titles);
 
 //        for (int i = 0; i < arrayListPhoneNum.size(); i++)
 //            tl_tabLayout.getTabAt(i).setIcon(tabIcons[i]);
 
-        customIcon(arrayListTitle);
     }
 
-    private void customIcon(ArrayList arrayListTtle) {
+    private void customIcon(String[] arrayListTtle) {
         for (int i = 0; i < tl_tabLayout.getTabCount(); i++) {
             LinearLayout tab = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.item_tablayout, null);
             TextView tab_label = (TextView) tab.findViewById(R.id.nav_label);
             ImageView tab_icon = (ImageView) tab.findViewById(R.id.nav_icon);
 
-            tab_label.setText(arrayListTtle.get(i) + "");
+            tab_label.setText(arrayListTtle[i] + "");
 
             tab_label.setTextColor(getResources().getColor(R.color.colorWhite));
 //            tab_icon.setImageResource(tabIcons[i]);
-
 
             // finally publish this custom view to navigation tab
             tl_tabLayout.getTabAt(i).setCustomView(tab);
@@ -263,7 +259,8 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            alertDialogFilterPhone();
+            finish();
+            startActivity(new Intent(Activity_Main_NoteSMS.this, Activity_Setting_NoteSMS.class));
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -310,110 +307,6 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         }
     }
 
-    //----------------- filter
-    private AlertDialog alertDialogFilterPhone;
-    private AdRecyclFilterPhone adRecycPopUp;
-    private androidx.appcompat.widget.SearchView editsearchSearchView;
-    private List<ModFilterPhone> arraylistSearchView = new ArrayList<ModFilterPhone>();
-
-    private void alertDialogFilterPhone() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_listview_chooser, null, false);
-
-        Button btnFr = layout.findViewById(R.id.btnFr);
-        btnFr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialogFilterPhone.dismiss();
-            }
-        });
-
-        if (arraylistSearchView.size() != 0)
-            arraylistSearchView.clear();
-        ArrayList arrayList = new ArrayList();
-
-        for (int i = 0; i < tb_billsList.size(); i++)
-            arrayList.add(tb_billsList.get(i).senderSMS);
-
-        LinkedHashSet<String> lhs = new LinkedHashSet<String>();
-        lhs.addAll(arrayList);
-        arrayList.clear();
-        arrayList.addAll(lhs);
-
-        String[] titles = preferences.getString("titles", "").split(",");
-
-//        if (!titles[0].equals("")) {
-//            ArrayList titlesArr = new ArrayList();
-//            for (int i = 0; i < titles.length; i++)
-//                titlesArr.add(titles[i] + "");
-//
-//            arrayList.retainAll(titlesArr);
-//        }
-
-        for (int i = 0; i < arrayList.size(); i++) {
-            ModFilterPhone modAlerts = new ModFilterPhone(
-                    arrayList.get(i) + "",
-                    arrayList.get(i) + "");
-            arraylistSearchView.add(modAlerts);
-        }
-
-
-        RecyclerView recycFitler = layout.findViewById(R.id.recycFitler);
-        adRecycPopUp = new AdRecyclFilterPhone(context, arraylistSearchView, new onClickInterface() {
-            @Override
-            public void setClick(int position, View view, String s) {
-
-                TextView txttitle = ((LinearLayout) view).findViewById(R.id.txtTitle);
-                TextView txtId = ((LinearLayout) view).findViewById(R.id.txtId);
-                String titlePH = txttitle.getText().toString();
-                String id = txtId.getText().toString();
-
-                String titles = preferences.getString("titles", "");
-                String phoneNum = preferences.getString("phoneNum", "");
-
-                if (!arrayListPhoneNum.contains(titlePH)) {
-
-                    if (!titlePH.equals("") && !titles.contains(titlePH)) {
-                        titlePH += "," + titles;
-                        id += "," + phoneNum;
-//                        title += phoneNum;
-
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("titles", titlePH);
-                        editor.putString("phoneNum", id);
-                        editor.apply();
-                        alertDialogFilterPhone.dismiss();
-                        initViewPager();
-
-                    } else
-                        Toast.makeText(context, "این رو قبلا زدی", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(context, "چنین شماره ای وجود داره", Toast.LENGTH_SHORT).show();
-            }
-        });
-        recycFitler.setAdapter(adRecycPopUp);
-
-        editsearchSearchView = layout.findViewById(R.id.searchFr);
-        editsearchSearchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                String text = newText;
-                adRecycPopUp.filter(text);
-                return true;
-            }
-        });
-
-        builder.setView(layout);
-        alertDialogFilterPhone = builder.create();
-        alertDialogFilterPhone.show();
-        alertDialogFilterPhone.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-    }
 
     private void loading() {
         try {
@@ -461,7 +354,6 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 //                        "\n" + smsDayTime +
 //                        "\n" + smsInboxCursor.getString(type) +
 //                        "\n";
-
                 tb_Bills tb_bills = new tb_Bills();
 
                 String dateMiladi = convertDate(smsDayTime.toString());
@@ -479,7 +371,6 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
                 tb_bills.dateNoteMiladi = "";
                 tb_bills.dateNoteJalali = "";
                 tb_bills.temp = "";
-
 
                 if (counter == 0) {
                     tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());

@@ -1,4 +1,4 @@
-package ir.helpdesk.notesms.Acticity.Main.Adapter;
+package ir.helpdesk.notesms.Acticity.Main.Fragment.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,31 +6,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ir.helpdesk.notesms.Acticity.Main.ModFilterPhone;
-import ir.helpdesk.notesms.R;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import ir.helpdesk.notesms.Acticity.Main.ModFilterPhone;
+import ir.helpdesk.notesms.Acticity.Setting.Adapter.onClickInterface;
+import ir.helpdesk.notesms.R;
 
 public class AdRecyclFilterPhone extends RecyclerView.Adapter<AdRecyclFilterPhone.ViewHolder> {
 
     private Context context;
     private List<ModFilterPhone> data;
     private int lastPosition = -1;
-    private ir.helpdesk.notesms.Acticity.Main.Adapter.onClickInterface onClickInterface;
+    private onClickInterface onClickInterface;
     private ArrayList<ModFilterPhone> arraylist;
+    private String tag;
 
     public AdRecyclFilterPhone(Context context, List<ModFilterPhone> data, onClickInterface onClickInterface) {
         this.context = context;
         this.data = data;
         this.onClickInterface = onClickInterface;
+        this.tag = tag;
         this.arraylist = new ArrayList<ModFilterPhone>();
         this.arraylist.addAll(data);
     }
@@ -50,6 +54,7 @@ public class AdRecyclFilterPhone extends RecyclerView.Adapter<AdRecyclFilterPhon
             holder.itemView.startAnimation(animation);
             lastPosition = position;
 
+            holder.checkboxTitle.setVisibility(View.GONE);
             holder.txtTitle.setText(data.get(position).getTitle() + "");
             holder.txtId.setText(data.get(position).getId() + "");
 
@@ -75,6 +80,7 @@ public class AdRecyclFilterPhone extends RecyclerView.Adapter<AdRecyclFilterPhon
         LinearLayout layoutMain;
         TextView txtTitle;
         TextView txtId;
+        CheckBox checkboxTitle;
 
         ViewHolder(View view) {
             super(view);
@@ -82,6 +88,7 @@ public class AdRecyclFilterPhone extends RecyclerView.Adapter<AdRecyclFilterPhon
             layoutMain = view.findViewById(R.id.layoutMain);
             txtTitle = view.findViewById(R.id.txtTitle);
             txtId = view.findViewById(R.id.txtId);
+            checkboxTitle = view.findViewById(R.id.checkboxTitle);
 
         }
     }

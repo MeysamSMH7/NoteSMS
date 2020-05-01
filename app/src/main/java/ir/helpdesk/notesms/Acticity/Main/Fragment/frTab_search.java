@@ -2,10 +2,7 @@ package ir.helpdesk.notesms.Acticity.Main.Fragment;
 
 
 import android.app.AlertDialog;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ir.helpdesk.notesms.Acticity.Main.Adapter.AdRecyclFilterPhone;
-import ir.helpdesk.notesms.Acticity.Main.Adapter.onClickInterface;
+import ir.helpdesk.notesms.Acticity.Main.Fragment.Adapter.AdRecyclFilterPhone;
+import ir.helpdesk.notesms.Acticity.Setting.Adapter.onClickInterface;
 import ir.helpdesk.notesms.Acticity.Main.Fragment.Adapter.AdRecycItems;
 import ir.helpdesk.notesms.Acticity.Main.ModFilterPhone;
 import ir.helpdesk.notesms.Classes.getDate;
@@ -27,24 +24,14 @@ import ir.helpdesk.notesms.DataBase.Tables.tb_Bills;
 import ir.helpdesk.notesms.R;
 
 import android.animation.Animator;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.media.Image;
-import android.os.Build;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -72,6 +59,7 @@ public class frTab_search extends Fragment {
     private FloatingActionButton btnSearch;
     private RecyclerView recyclFr_Search;
     private RelativeLayout layoutMain;
+    private RelativeLayout relatFrDeleteSearch;
     private LinearLayout linearSearch;
     private TextView txtFrSearch_NoData;
     private ImageView imgDoSearch_v4_1;
@@ -84,6 +72,8 @@ public class frTab_search extends Fragment {
 
     private List<tb_Bills> list;
 
+    private AdRecycItems adapter;
+
     public static frTab_search newInstance() {
 
         Bundle args = new Bundle();
@@ -95,7 +85,9 @@ public class frTab_search extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fr_tab_search, container, false);
         findViews(view);
         clicks();
@@ -204,7 +196,7 @@ public class frTab_search extends Fragment {
             arrayList.add(tb_BillsStructure.senderSMS + " = '" + edtFrSearch_Phone.getText().toString() + "'");
         }
         if (!dateJalali.equals("")) {
-            arrayList.add(tb_BillsStructure.dateSMSJalali + "='" + dateJalali + "'"); // its jalali :| La hes to edit :|
+            arrayList.add(tb_BillsStructure.dateSMSJalali + "='" + dateJalali + "'");
         }
         if (!dateMiladiStart.equals("") && !dateMiladiEnd.equals("")) {
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" + dateMiladiStart + "' AND '" + dateMiladiEnd + "'");
@@ -216,20 +208,10 @@ public class frTab_search extends Fragment {
         }
 
         list = new tb_BillsDataSource(getContext()).Search(arrayList);
-        AdRecycItems adapter = new AdRecycItems(getContext(), list, new onClickInterface() {
+        adapter = new AdRecycItems(getContext(), list, new onClickInterface() {
             @Override
             public void setClick(int position, View view, String id) {
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = getActivity().getIntent();
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        getActivity().overridePendingTransition(0, 0);
-                        getActivity().finish();
-                        getActivity().overridePendingTransition(0, 0);
-                        startActivity(intent);
-                    }
-                });
+                adapter.notifyDataSetChanged();
 
             }
         });
@@ -274,7 +256,6 @@ public class frTab_search extends Fragment {
                 });
             }
         });
-
 
         txtFrSearch_DateSMulti_End.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -330,6 +311,29 @@ public class frTab_search extends Fragment {
             }
         });
 
+        relatFrDeleteSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                edtFrSearch_Phone.setText("");
+                edtFrSearch_FullName.setText("");
+
+                dateMiladiStart = "";
+                dateMiladiEnd = "";
+                txtFrSearch_DateSMulti_Start.setText("تاریخ شروع");
+                txtFrSearch_DateSMulti_Start2.setText("");
+                txtFrSearch_DateSMulti_End.setText("تاریخ پایان");
+                txtFrSearch_DateSMulti_End2.setText("");
+
+                dateMiladi = "";
+                dateJalali = "";
+                txtFrSearch_DateSingle.setText("انتخاب تاریخ");
+                txtFrSearch_Date2Single.setText("");
+
+
+            }
+        });
+
     }
 
     private void findViews(View view) {
@@ -352,6 +356,7 @@ public class frTab_search extends Fragment {
         linearSearch = view.findViewById(R.id.linearSearch);
         txtFrSearch_NoData = view.findViewById(R.id.txtFrSearch_NoData);
         relatFrSearch = view.findViewById(R.id.relatFrSearch);
+        relatFrDeleteSearch = view.findViewById(R.id.relatFrDeleteSearch);
         imgDoSearch_v4_1 = view.findViewById(R.id.imgDoSearch_v4_1);
         imgDoSearch_v4_2 = view.findViewById(R.id.imgDoSearch_v4_2);
 

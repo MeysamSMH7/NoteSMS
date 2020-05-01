@@ -16,6 +16,14 @@
         android:text="asdfasd"
         android:textColor="@color/mdtp_transparent_black" />
 
+    <CheckBox
+        android:id="@+id/checkboxTitle"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="asdfasd"
+        android:textColor="@color/mdtp_transparent_black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <TextView
         android:id="@+id/txtId"
         android:layout_width="match_parent"

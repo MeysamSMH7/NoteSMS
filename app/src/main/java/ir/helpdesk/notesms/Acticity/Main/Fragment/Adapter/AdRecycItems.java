@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import ir.helpdesk.notesms.Acticity.Main.Adapter.onClickInterface;
+import ir.helpdesk.notesms.Acticity.Setting.Adapter.onClickInterface;
 import ir.helpdesk.notesms.Classes.CalendarTool;
 import ir.helpdesk.notesms.DataBase.DataSource.tb_BillsDataSource;
 import ir.helpdesk.notesms.DataBase.Tables.tb_Bills;
@@ -34,7 +34,7 @@ public class AdRecycItems extends RecyclerView.Adapter<AdRecycItems.ViewHolder> 
     private Context context;
     private List<tb_Bills> data;
     private int lastPosition = -1;
-    private ir.helpdesk.notesms.Acticity.Main.Adapter.onClickInterface onClickInterface;
+    private ir.helpdesk.notesms.Acticity.Setting.Adapter.onClickInterface onClickInterface;
 //    private ArrayList<tb_Bills> arraylist;
 
     private AlertDialog alertDialogAddNote;
