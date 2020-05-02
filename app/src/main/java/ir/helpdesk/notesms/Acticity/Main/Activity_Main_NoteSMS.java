@@ -54,7 +54,10 @@ import java.util.List;
 import ir.helpdesk.notesms.Acticity.Main.Adapter.ViewPagerAdapterMain;
 import ir.helpdesk.notesms.Acticity.Setting.Activity_Setting_NoteSMS;
 import ir.helpdesk.notesms.Classes.CalendarTool;
+import ir.helpdesk.notesms.Classes.SQLiteToExcel;
 import ir.helpdesk.notesms.DataBase.DataSource.tb_BillsDataSource;
+import ir.helpdesk.notesms.DataBase.DatabaseManagement;
+import ir.helpdesk.notesms.DataBase.Structure.tb_BillsStructure;
 import ir.helpdesk.notesms.DataBase.Tables.tb_Bills;
 import ir.helpdesk.notesms.Acticity.Main.Fragment.frTab_item;
 import ir.helpdesk.notesms.Acticity.Main.Fragment.frTab_search;
@@ -93,7 +96,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(Activity_Main_NoteSMS.this,R.color.colorLogo));
+        window.setStatusBarColor(ContextCompat.getColor(Activity_Main_NoteSMS.this, R.color.colorLogo));
 
         loading();
         findViews();
@@ -217,13 +220,13 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 //        if (drawer.isDrawerOpen(GravityCompat.START)) {
 //            drawer.closeDrawer(GravityCompat.START);
 //        } else {
-            if (TimeBackPressed + Time_Between_Two_Back > System.currentTimeMillis()) {
-                super.onBackPressed();
-                return;
-            } else
-                Toast.makeText(context, "برای خروج دوباره کلیک کنید", Toast.LENGTH_SHORT).show();
+        if (TimeBackPressed + Time_Between_Two_Back > System.currentTimeMillis()) {
+            super.onBackPressed();
+            return;
+        } else
+            Toast.makeText(context, "برای خروج دوباره کلیک کنید", Toast.LENGTH_SHORT).show();
 
-            TimeBackPressed = System.currentTimeMillis();
+        TimeBackPressed = System.currentTimeMillis();
 //        }
     }
 
@@ -242,12 +245,24 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings){
+        if (id == R.id.action_settings) {
             finish();
             startActivity(new Intent(Activity_Main_NoteSMS.this, Activity_Setting_NoteSMS.class));
             return true;
-        }
+        } else if (id == R.id.action_exel) {
+            if (Build.VERSION.SDK_INT > 23)
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+            else
+                exportDBToEx();
 
+            if (Build.VERSION.SDK_INT > 23) {
+                String requiredPermission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                int checkVal = checkCallingOrSelfPermission(requiredPermission);
+                if (checkVal == PackageManager.PERMISSION_GRANTED) {
+                    exportDBToEx();
+                }
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -303,6 +318,29 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
                 builder.create();
                 builder.show();
             }
+        } else if (requestCode == 2) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+               exportDBToEx();
+            } else {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("رد کردن دسترسی");
+                builder.setMessage("این برنامه نیاز به دسترسی به حافظه های شما رو داره");
+                builder.setPositiveButton("درخواست دوباره", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(Activity_Main_NoteSMS.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("بستن برنامه", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+                builder.create();
+                builder.show();
+            }
         }
     }
 
@@ -321,6 +359,28 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         }
     }
 
+    private void exportDBToEx() {
+        SQLiteToExcel sqLiteToExcel = new SQLiteToExcel(this, DatabaseManagement.databaseName);
+        sqLiteToExcel.exportSingleTable(tb_BillsStructure.tableName, "noteSMS.xls", new SQLiteToExcel.ExportListener() {
+            @Override
+            public void onStart() {
+                alertDialogLoading.show();
+            }
+
+            @Override
+            public void onCompleted(String filePath) {
+                alertDialogLoading.dismiss();
+                Toast.makeText(context, "فایل شما با موفقیت در حافظه ی گوشی شما ذخیره شد.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                alertDialogLoading.dismiss();
+                Toast.makeText(context, "ذخیره کردن با مشکل مواجع شد!", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        });
+    }
     //----------------------------------------------- SMS
 
     public void getSMSFromInbox() {
