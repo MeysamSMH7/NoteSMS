@@ -4,38 +4,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Acticity.Setting.Activity_Setting_NoteSMS"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layoutDirection="rtl"
+    tools:context=".Acticity.Setting.Activity_Setting_NoteSMS">
 
-    <Button
-        android:id="@+id/btnChooseFilter"
-        android:text="حذف و اضافه"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimaryDark"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:background="@drawable/bg_greywhite_corner"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content">
+        android:padding="7dp">
 
         <TextView
             android:layout_width="match_parent"
-            android:text="قابلیت اضافه کردن یادداشت سریع (این قابلیت درحال حاضر غیرفعال می باشد)"
-            android:layout_height="wrap_content"/>
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:gravity="right|center"
+            android:text="اصافی کردن\nجدا سازی شماره های دلخواه."
+            android:textColor="@color/colorBlack" />
+
 
         <Button
-            android:id="@+id/btnQuickReplay"
+            android:id="@+id/btnChooseFilter"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="انتخاب از لیست" />
+            android:text="کلیک کنید" />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:background="@drawable/bg_greywhite_corner"
+        android:orientation="vertical"
+        android:padding="7dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:gravity="right|center"
+            android:text="یادداشت سریع (درحال حافصر غیر فعال میباشد)\nفعال یا غیر فعال کردن یادداشت سریع برای شماره ی دلخواه"
+            android:textColor="@color/colorBlack" />
+
+
+        <Button
+            android:id="@+id/btnQuickReplay"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="انتخاب کنید" />
+
+    </LinearLayout>
+
+
     <Button
         android:id="@+id/btnClose"
-        android:text="بستن"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="بستن تنظیمات" />
 
 </LinearLayout>

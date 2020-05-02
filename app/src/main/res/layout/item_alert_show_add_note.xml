@@ -21,6 +21,7 @@
             android:textColor="@color/colorWhite">
 
             <TextView
+                android:text="اضافه کردن  یادداشت"
                 android:id="@+id/txtSMessage_title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

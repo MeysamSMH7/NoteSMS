@@ -1,6 +1,9 @@
 package ir.helpdesk.notesms.Acticity.Setting;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
@@ -8,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -39,14 +43,21 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
     private ArrayList<tb_Bills> tb_billsList;
     private SharedPreferences preferences;
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(Activity_Setting_NoteSMS.this, Activity_Main_NoteSMS.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_notesms);
-        preferences = getSharedPreferences("TuRn", 0);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        preferences = getSharedPreferences("nOtEsMs", 0);
         tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());
-
+        loading();
         Button btnChooseFilter = findViewById(R.id.btnChooseFilter);
         btnChooseFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,8 +78,14 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-                startActivity(new Intent(Activity_Setting_NoteSMS.this, Activity_Main_NoteSMS.class));
+                alertDialogLoading.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                        startActivity(new Intent(Activity_Setting_NoteSMS.this, Activity_Main_NoteSMS.class));
+                    }
+                }, 2000);
             }
         });
 
@@ -98,7 +115,7 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
         arrayList.clear();
         arrayList.addAll(lhs);
 
-        String[] titles = preferences.getString("titles", "").split(",");
+        String[] titles = preferences.getString("phoneNum", "").split(",");
 
 //        if (!titles[0].equals("")) {
 //            ArrayList titlesArr = new ArrayList();
@@ -167,5 +184,23 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
         alertDialogFilterPhone.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
     }
+
+    private AlertDialog alertDialogLoading;
+
+    private void loading() {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setCancelable(false);
+            LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.loading, null, false);
+
+            builder.setView(layout);
+            alertDialogLoading = builder.create();
+            alertDialogLoading.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

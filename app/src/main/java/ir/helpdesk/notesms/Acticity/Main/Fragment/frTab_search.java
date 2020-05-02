@@ -145,7 +145,6 @@ public class frTab_search extends Fragment {
                         linearFrSearch_DateMulti.setVisibility(View.VISIBLE);
                         linearFrSearch_DateSingle.setVisibility(View.GONE);
                         dateMiladi = "";
-                        dateJalali = "";
                         txtFrSearch_DateSingle.setText("انتخاب تاریخ");
                         txtFrSearch_Date2Single.setText("");
 
@@ -177,7 +176,7 @@ public class frTab_search extends Fragment {
                         dateMiladiStart.equals("") &&
                         dateMiladiEnd.equals("") &&
                         dateMiladiStart.equals("") &&
-                        dateJalali.equals("") &&
+                        txtFrSearch_DateSMulti_Start2.getText().toString().equals("") &&
                         !dateMiladiEnd.equals("")
         ) {
             Toast.makeText(getContext(), "لطفا یک فیلد را پر کنید" + "", Toast.LENGTH_SHORT).show();
@@ -196,7 +195,8 @@ public class frTab_search extends Fragment {
             arrayList.add(tb_BillsStructure.senderSMS + " = '" + edtFrSearch_Phone.getText().toString() + "'");
         }
         if (!dateJalali.equals("")) {
-            arrayList.add(tb_BillsStructure.dateSMSJalali + "='" + dateJalali + "'");
+            arrayList.add(tb_BillsStructure.dateSMSJalali + "='" +
+                    txtFrSearch_Date2Single.getText().toString() + "'");
         }
         if (!dateMiladiStart.equals("") && !dateMiladiEnd.equals("")) {
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" + dateMiladiStart + "' AND '" + dateMiladiEnd + "'");
@@ -326,7 +326,6 @@ public class frTab_search extends Fragment {
                 txtFrSearch_DateSMulti_End2.setText("");
 
                 dateMiladi = "";
-                dateJalali = "";
                 txtFrSearch_DateSingle.setText("انتخاب تاریخ");
                 txtFrSearch_Date2Single.setText("");
 

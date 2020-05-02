@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0DC3B2</color>
-    <color name="colorLogo">#0DC3B2</color>
-    <color name="colorPrimaryDark">#0DC3B2</color>
-    <color name="colorAccent">#000000</color>
+    <color name="colorPrimary">#7a154c</color>
+    <color name="colorPrimaryDark">#7a154c</color>
+    <color name="colorAccent">#7a154c</color>
+    <color name="colorLogo">#7a154c</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGreen">#25c24f</color>
     <color name="colorBlue">#62bdfc</color>
@@ -24,9 +24,9 @@
     <color name="colorYellow2">#E2E21F</color>
     <color name="colorLoginRegister1">#2e858f</color>
     <color name="colorLoginRegister3">#c7edf0f1</color>
-    <color name="colorPurple2">#0DC3B2</color>
-    <color name="colorPurple">#0DC3B2</color>
-    <color name="colorPurple3">#0DC3B2</color>
+    <color name="colorPurple2">#157a43</color>
+    <color name="colorPurple">#157a43</color>
+    <color name="colorPurple3">#157a43</color>
     <color name="colorPurple4">#23161D</color>
     <color name="colorPurple5">#531B42</color>
     <color name="colorPurple6">#0DC3B2</color>

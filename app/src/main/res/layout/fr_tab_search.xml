@@ -67,8 +67,7 @@
                 android:layout_margin="3dp"
                 android:background="@drawable/bg_greywhite_corner"
                 android:orientation="vertical"
-                android:padding="7dp"
-                android:visibility="gone">
+                android:padding="7dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -101,10 +100,11 @@
                         android:textSize="15sp" />
 
                 </LinearLayout>
+
             </LinearLayout>
 
-
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"

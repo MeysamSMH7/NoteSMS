@@ -15,34 +15,20 @@
     <application
         android:name=".Classes.BaseActivity"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon_app"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icon_app"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Acticity.Setting.Activity_Setting_NoteSMS">
-            <!--             <intent-filter>-->
-            <!--             <action android:name="android.intent.action.MAIN" />-->
-            <!--             <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--             </intent-filter>-->
-        </activity>
-        <activity
-            android:name=".Acticity.Main.Activity_Main_NoteSMS"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".Acticity.Splash.Activity_Splash_NoteSMS">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".sms.SmsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+        <activity android:name=".Acticity.Setting.Activity_Setting_NoteSMS" />
+        <activity android:name=".Acticity.Main.Activity_Main_NoteSMS" />
+        <activity android:name=".sms.SmsActivity" />
     </application>
 
 </manifest>

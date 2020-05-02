@@ -14,11 +14,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
@@ -38,6 +40,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.view.Menu;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -70,20 +74,26 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 
     private SharedPreferences preferences;
     private AlertDialog alertDialogLoading;
+    private ViewPagerAdapterMain viewPagerAdapterMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_notesms);
+        setContentView(R.layout.app_bar_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+//        NavigationView navigationView = findViewById(R.id.nav_view);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
+//        navigationView.setNavigationItemSelectedListener(this);
+
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(Activity_Main_NoteSMS.this,R.color.colorLogo));
 
         loading();
         findViews();
@@ -110,7 +120,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
     }
 
     private void findViews() {
-        preferences = getSharedPreferences("TuRn", 0);
+        preferences = getSharedPreferences("nOtEsMs", 0);
         toolbar = findViewById(R.id.toolbar);
 
         tl_tabLayout = findViewById(R.id.tl_tabLayout);
@@ -135,17 +145,15 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         }
     }
 
-    private ArrayList<tb_Bills> getCustomData(String phoneNum) {
-        ArrayList<tb_Bills> bills = new ArrayList<>();
-        for (int i = 0; i < tb_billsList.size(); i++) {
-            tb_Bills tbBills = tb_billsList.get(i);
-            if (tbBills.senderSMS.equals(phoneNum))
-                bills.add(tbBills);
-        }
-        return bills;
-    }
-
-    ViewPagerAdapterMain viewPagerAdapterMain;
+//    private ArrayList<tb_Bills> getCustomData(String phoneNum) {
+//        ArrayList<tb_Bills> bills = new ArrayList<>();
+//        for (int i = 0; i < tb_billsList.size(); i++) {
+//            tb_Bills tbBills = tb_billsList.get(i);
+//            if (tbBills.senderSMS.equals(phoneNum))
+//                bills.add(tbBills);
+//        }
+//        return bills;
+//    }
 
     private void initViewPager() {
 
@@ -153,7 +161,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 
         String defaultTabs = "جستجو,همه";
 
-        String titlesPre = preferences.getString("titles", "");
+        String titlesPre = preferences.getString("phoneNum", "");
         String[] titles;
 
 
@@ -168,14 +176,11 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         List<Fragment> fragments = new ArrayList<>();
 
         fragments.add(frTab_search.newInstance());
-        fragments.add(frTab_item.newInstance(tb_billsList));
+        fragments.add(frTab_item.newInstance("all"));
 
         if (!titlesPre.equals(""))
-            for (int i = 2; i < titles.length; i++) {
-                String title = titles[i] + "";
-                ArrayList<tb_Bills> bills = getCustomData(title);
-                fragments.add(frTab_item.newInstance(bills));
-            }
+            for (int i = 2; i < titles.length; i++)
+                fragments.add(frTab_item.newInstance(titles[i]));
 
         viewPagerAdapterMain = new ViewPagerAdapterMain(getSupportFragmentManager(), fragments, titles);
         vp_viewPager.setAdapter(viewPagerAdapterMain);
@@ -208,10 +213,10 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
+//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
             if (TimeBackPressed + Time_Between_Two_Back > System.currentTimeMillis()) {
                 super.onBackPressed();
                 return;
@@ -219,7 +224,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
                 Toast.makeText(context, "برای خروج دوباره کلیک کنید", Toast.LENGTH_SHORT).show();
 
             TimeBackPressed = System.currentTimeMillis();
-        }
+//        }
     }
 
     @Override
@@ -237,15 +242,9 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.nav_slideshow) {
-            PersianCalendar persianCalendar = new PersianCalendar();
-            DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                    null,
-                    persianCalendar.getPersianYear(),
-                    persianCalendar.getPersianMonth(),
-                    persianCalendar.getPersianDay()
-            );
-            datePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+        if (id == R.id.action_settings){
+            finish();
+            startActivity(new Intent(Activity_Main_NoteSMS.this, Activity_Setting_NoteSMS.class));
             return true;
         }
 
@@ -268,8 +267,8 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         }
 
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -307,7 +306,6 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         }
     }
 
-
     private void loading() {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -326,27 +324,29 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
     //----------------------------------------------- SMS
 
     public void getSMSFromInbox() {
-
         alertDialogLoading.show();
-        ContentResolver contentResolver = getContentResolver();
-        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"),
-                null, null, null, null);
-        int indexBody = smsInboxCursor.getColumnIndex("body");
-        int indexAddress = smsInboxCursor.getColumnIndex("address");
-        int date = smsInboxCursor.getColumnIndex("date");
-        int type = smsInboxCursor.getColumnIndex("type");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ContentResolver contentResolver = getContentResolver();
+                Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"),
+                        null, null, null, null);
+                int indexBody = smsInboxCursor.getColumnIndex("body");
+                int indexAddress = smsInboxCursor.getColumnIndex("address");
+                int date = smsInboxCursor.getColumnIndex("date");
+                int type = smsInboxCursor.getColumnIndex("type");
 
-        tb_BillsDataSource source = new tb_BillsDataSource(context);
+                tb_BillsDataSource source = new tb_BillsDataSource(context);
 
-        int counter = 0;
-        boolean ifBreak = false;
+                int counter = 0;
+                boolean ifBreak = false;
 
-        if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
-        do {
-            String typeee = smsInboxCursor.getString(type);
-            if (typeee.equals("1")) {
-                String key = smsInboxCursor.getString(date);
-                Date smsDayTime = new Date(Long.valueOf(key));
+                if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
+                do {
+                    String typeee = smsInboxCursor.getString(type);
+                    if (typeee.equals("1")) {
+                        String key = smsInboxCursor.getString(date);
+                        Date smsDayTime = new Date(Long.valueOf(key));
 
 //                Log.i("ASDF =========> ", smsInboxCursor.getString(indexAddress) + "");
 //                String str = "SMS From: " + smsInboxCursor.getString(indexAddress) +
@@ -354,42 +354,49 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 //                        "\n" + smsDayTime +
 //                        "\n" + smsInboxCursor.getString(type) +
 //                        "\n";
-                tb_Bills tb_bills = new tb_Bills();
+                        tb_Bills tb_bills = new tb_Bills();
 
-                String dateMiladi = convertDate(smsDayTime.toString());
-                String[] dateSamsiArr = dateMiladi.split("-");
-                CalendarTool tool = new CalendarTool();
-                tool.setGregorianDate(Integer.parseInt(dateSamsiArr[0]), Integer.parseInt(dateSamsiArr[1]), Integer.parseInt(dateSamsiArr[2]));
-                String dataSamsi = tool.getIranianDate();
+                        String dateMiladi = convertDate(smsDayTime.toString());
+                        String[] dateSamsiArr = dateMiladi.split("-");
+                        CalendarTool tool = new CalendarTool();
+                        tool.setGregorianDate(Integer.parseInt(dateSamsiArr[0]), Integer.parseInt(dateSamsiArr[1]), Integer.parseInt(dateSamsiArr[2]));
+                        String dataSamsi = tool.getIranianDate();
 
-                tb_bills.PK_key = key;
-                tb_bills.txtSMS = smsInboxCursor.getString(indexBody);
-                tb_bills.senderSMS = smsInboxCursor.getString(indexAddress);
-                tb_bills.dateSMSMiladi = dateMiladi;
-                tb_bills.dateSMSJalali = dataSamsi;
-                tb_bills.txtNote = "";
-                tb_bills.dateNoteMiladi = "";
-                tb_bills.dateNoteJalali = "";
-                tb_bills.temp = "";
+                        tb_bills.PK_key = key;
+                        tb_bills.txtSMS = smsInboxCursor.getString(indexBody);
+                        tb_bills.senderSMS = smsInboxCursor.getString(indexAddress);
+                        tb_bills.dateSMSMiladi = dateMiladi;
+                        tb_bills.dateSMSJalali = dataSamsi;
+                        tb_bills.txtNote = "";
+                        tb_bills.dateNoteMiladi = "";
+                        tb_bills.dateNoteJalali = "";
+                        tb_bills.temp = "";
 
-                if (counter == 0) {
-                    tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());
-                    if (tb_billsList.size() != 0)
-                        if (key.equals(tb_billsList.get(0).PK_key))
-                            ifBreak = true;
-                }
-                counter++;
+                        if (counter == 0) {
+                            tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());
+                            if (tb_billsList.size() != 0)
+                                if (key.equals(tb_billsList.get(0).PK_key))
+                                    ifBreak = true;
+                        }
+                        counter++;
 
-                if (ifBreak)
-                    break;
+                        if (ifBreak)
+                            break;
 
-                if (source.isARecordExist(key))
-                    source.Add(tb_bills);
+                        if (source.isARecordExist(key))
+                            source.Add(tb_bills);
+                    }
+                } while (smsInboxCursor.moveToNext());
+                initViewPager();
             }
-        } while (smsInboxCursor.moveToNext());
-        initViewPager();
-        alertDialogLoading.dismiss();
+        }, 2000);
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                alertDialogLoading.dismiss();
+            }
+        }, 1000);
     }
 
     private String convertDate(String date) {

@@ -66,8 +66,8 @@ public class AdRecyclFilterPhoneCheckBox extends RecyclerView.Adapter<AdRecyclFi
                     onClickInterface.setClick(position, holder.itemView, null);
                 }
             });
-            final SharedPreferences preferences = context.getSharedPreferences("TuRn", 0);
-            final String[] titles = preferences.getString("titles", "").split(",");
+            final SharedPreferences preferences = context.getSharedPreferences("nOtEsMs", 0);
+            final String[] titles = preferences.getString("phoneNum", "").split(",");
 
             boolean b = false;
             if (!titles[0].equals(""))
@@ -86,17 +86,14 @@ public class AdRecyclFilterPhoneCheckBox extends RecyclerView.Adapter<AdRecyclFi
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                     final String titlePH = holder.checkboxTitle.getText().toString();
-                    String phoneNum = preferences.getString("phoneNum", "");
-                    final String titles = preferences.getString("titles", "");
+                    final String titles = preferences.getString("phoneNum", "");
                     if (isChecked) {
                         if (!titles.contains(titlePH)) {
                             if (!titlePH.equals("") && !titles.contains(titlePH)) {
                                 SharedPreferences.Editor editor = preferences.edit();
                                 if (titles.equals("")) {
-                                    editor.putString("titles", titlePH);
                                     editor.putString("phoneNum", titlePH);
                                 } else {
-                                    editor.putString("titles", titles + "," + titlePH);
                                     editor.putString("phoneNum", titles + "," + titlePH);
                                 }
                                 editor.apply();
@@ -106,7 +103,7 @@ public class AdRecyclFilterPhoneCheckBox extends RecyclerView.Adapter<AdRecyclFi
                         } else
                             Toast.makeText(context, "چنین شماره ای وجود داره", Toast.LENGTH_SHORT).show();
                     } else {
-                        final String[] titles2 = preferences.getString("titles", "").split(",");
+                        final String[] titles2 = preferences.getString("phoneNum", "").split(",");
                         String temp = "";
                         for (int i = 0; i < titles2.length; i++) {
                             String tempInPer = titles2[i];
@@ -121,7 +118,6 @@ public class AdRecyclFilterPhoneCheckBox extends RecyclerView.Adapter<AdRecyclFi
                         }
 
                         SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("titles", temp);
                         editor.putString("phoneNum", temp);
                         editor.apply();
                     }
