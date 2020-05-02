@@ -106,13 +106,13 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         editor.putBoolean("FirstTime?", false);
         editor.apply();
 
-        if (Build.VERSION.SDK_INT > 23)
+        if (Build.VERSION.SDK_INT >= 23)
             requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS,
                     Manifest.permission.BIND_TELECOM_CONNECTION_SERVICE, Manifest.permission.BROADCAST_SMS}, 1);
         else
             getSMSFromInbox();
 
-        if (Build.VERSION.SDK_INT > 23) {
+        if (Build.VERSION.SDK_INT >= 23) {
             String requiredPermission = android.Manifest.permission.SEND_SMS;
             int checkVal = checkCallingOrSelfPermission(requiredPermission);
             if (checkVal == PackageManager.PERMISSION_GRANTED) {
@@ -250,12 +250,12 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
             startActivity(new Intent(Activity_Main_NoteSMS.this, Activity_Setting_NoteSMS.class));
             return true;
         } else if (id == R.id.action_exel) {
-            if (Build.VERSION.SDK_INT > 23)
+            if (Build.VERSION.SDK_INT >= 23)
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
             else
                 exportDBToEx();
 
-            if (Build.VERSION.SDK_INT > 23) {
+            if (Build.VERSION.SDK_INT >= 23) {
                 String requiredPermission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
                 int checkVal = checkCallingOrSelfPermission(requiredPermission);
                 if (checkVal == PackageManager.PERMISSION_GRANTED) {

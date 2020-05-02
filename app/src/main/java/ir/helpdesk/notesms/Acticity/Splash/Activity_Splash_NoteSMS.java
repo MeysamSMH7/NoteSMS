@@ -21,6 +21,6 @@ public class Activity_Splash_NoteSMS extends AppCompatActivity {
             public void run() {
                 startActivity(new Intent(Activity_Splash_NoteSMS.this, Activity_Main_NoteSMS.class));
             }
-        }, 4000);
+        }, 3000);
     }
 }
