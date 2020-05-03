@@ -234,6 +234,43 @@ public class tb_BillsDataSource {
         return lstData;
     }
 
+
+    public ArrayList<tb_Bills> SearchArrayList(ArrayList array) {
+        Open();
+        ArrayList<tb_Bills> lstData = new ArrayList<tb_Bills>();
+
+        String query = "";
+        if (array.size() == 1) {
+            query = array.get(0).toString();
+        } else {
+            for (int i = 0; i < array.size(); i++) {
+                query += array.get(i).toString();
+                if (i < array.size() - 1) {
+                    query += " AND ";
+                }
+            }
+        }
+
+        Cursor cursor = database.query(tb_BillsStructure.tableName,
+                allColumns,
+                query,
+                null, null, null,
+                tb_BillsStructure.dateSMSMiladi + " DESC");
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast()) {
+            tb_Bills tmpInfo = ConvertToRecord(cursor);
+            lstData.add(tmpInfo);
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+        Close();
+        return lstData;
+    }
+
+
+
     public void IraniToGery() {
 
         List<tb_Bills> list = GetList();

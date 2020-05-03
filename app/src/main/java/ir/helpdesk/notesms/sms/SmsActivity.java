@@ -68,20 +68,38 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
         smsListView.setOnItemClickListener(this);
 
 
+//        ActivityCompat.requestPermissions(this, new String[]{
+//                Manifest.permission.SEND_SMS,
+//                Manifest.permission.READ_SMS,
+//                Manifest.permission.BIND_TELECOM_CONNECTION_SERVICE,
+//                Manifest.permission.BROADCAST_SMS}, 1234);
 
+        CalendarTool tool = new CalendarTool();
+        Log.i("DATE Number:", tool.getIranianDate());
+        tool.previousDay(30);
+        Log.i("DATE Number:", tool.getIranianDate());
 
-
-        ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.SEND_SMS,
-                Manifest.permission.READ_SMS,
-                Manifest.permission.BIND_TELECOM_CONNECTION_SERVICE,
-                Manifest.permission.BROADCAST_SMS}, 1234);
 
         source = new tb_BillsDataSource(context);
 
-        refreshSmsInbox();
+//        refreshSmsInbox();
 
     }
+
+    private ArrayList<tb_Bills> getCustomData(String phoneNum) {
+        ArrayList<tb_Bills> tb_billsList = new ArrayList<>(new
+                tb_BillsDataSource(context).GetList());
+
+        ArrayList<tb_Bills> bills = new ArrayList<>();
+
+        for (int i = 0; i < tb_billsList.size(); i++) {
+            tb_Bills tbBills = tb_billsList.get(i);
+            if (tbBills.senderSMS.equals(phoneNum))
+                bills.add(tbBills);
+        }
+        return bills;
+    }
+
 
     public void refreshSmsInbox() {
         ContentResolver contentResolver = getContentResolver();

@@ -21,12 +21,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Acticity.Splash.Activity_Splash_NoteSMS">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                        <intent-filter>
+                            <action android:name="android.intent.action.MAIN" />
+                            <category android:name="android.intent.category.LAUNCHER" />
+                        </intent-filter>
         </activity>
-        <activity android:name=".Acticity.Setting.Activity_Setting_NoteSMS" />
+        <activity android:name=".Acticity.Setting.Activity_Setting_NoteSMS">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
         <activity android:name=".Acticity.Main.Activity_Main_NoteSMS" />
         <activity android:name=".sms.SmsActivity" />
     </application>

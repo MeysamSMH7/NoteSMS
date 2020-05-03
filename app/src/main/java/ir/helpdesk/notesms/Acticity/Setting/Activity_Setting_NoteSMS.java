@@ -89,7 +89,112 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
             }
         });
 
+        checkBoxWeeks();
+
+
     }
+
+    private void checkBoxWeeks() {
+
+        final CheckBox checkbox_today = findViewById(R.id.checkbox_today);
+        final CheckBox checkbox_lastWeek = findViewById(R.id.checkbox_lastWeek);
+        final CheckBox checkbox_thisWeek = findViewById(R.id.checkbox_thisWeek);
+        final CheckBox checkbox_thisMonth = findViewById(R.id.checkbox_thisMonth);
+        final CheckBox checkbox_lastMonth = findViewById(R.id.checkbox_lastMonth);
+
+        checkbox_today.setChecked(false);
+        checkbox_lastWeek.setChecked(false);
+        checkbox_thisWeek.setChecked(false);
+        checkbox_thisMonth.setChecked(false);
+        checkbox_lastMonth.setChecked(false);
+
+        final String timeRange = preferences.getString("timeRange", "");
+        String[] titles = timeRange.split(",");
+        if (!titles[0].equals(""))
+            for (int i = 0; i < titles.length; i++) {
+                String tag = titles[i];
+                if (tag.equals("امروز")) checkbox_today.setChecked(true);
+                else if (tag.equals("7 روز گذشته")) checkbox_lastWeek.setChecked(true);
+                else if (tag.equals("این هفته")) checkbox_thisWeek.setChecked(true);
+                else if (tag.equals("این ماه")) checkbox_thisMonth.setChecked(true);
+                else if (tag.equals("30 روز گذشته")) checkbox_lastMonth.setChecked(true);
+
+            }
+
+        checkbox_today.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                getDataFromCheckBox(isChecked, checkbox_today);
+            }
+        });
+        checkbox_lastWeek.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                getDataFromCheckBox(isChecked, checkbox_lastWeek);
+            }
+        });
+        checkbox_thisWeek.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                getDataFromCheckBox(isChecked, checkbox_thisWeek);
+            }
+        });
+        checkbox_thisMonth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                getDataFromCheckBox(isChecked, checkbox_thisMonth);
+            }
+        });
+        checkbox_lastMonth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                getDataFromCheckBox(isChecked, checkbox_lastMonth);
+            }
+        });
+
+
+    }
+
+    private void getDataFromCheckBox(boolean isChecked, CheckBox checkbox) {
+
+        final String titlePH = checkbox.getText().toString();
+        final String titles = preferences.getString("timeRange", "");
+        if (isChecked) {
+            if (!titles.contains(titlePH)) {
+                if (!titlePH.equals("") && !titles.contains(titlePH)) {
+                    SharedPreferences.Editor editor = preferences.edit();
+                    if (titles.equals("")) {
+                        editor.putString("timeRange", titlePH);
+                    } else {
+                        editor.putString("timeRange", titles + "," + titlePH);
+                    }
+                    editor.apply();
+
+                } else
+                    Toast.makeText(context, "این رو قبلا زدی", Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(context, "چنین شماره ای وجود داره", Toast.LENGTH_SHORT).show();
+        } else {
+            final String[] titles2 = preferences.getString("timeRange", "").split(",");
+            String temp = "";
+            for (int i = 0; i < titles2.length; i++) {
+                String tempInPer = titles2[i];
+                if (!tempInPer.equals(titlePH)) {
+                    if (i == 0)
+                        temp = tempInPer;
+                    else if (temp.equals(""))
+                        temp = tempInPer;
+                    else
+                        temp += "," + tempInPer;
+                }
+            }
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("timeRange", temp);
+            editor.apply();
+        }
+
+ }
 
     private void alertDialogFilterPhone() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

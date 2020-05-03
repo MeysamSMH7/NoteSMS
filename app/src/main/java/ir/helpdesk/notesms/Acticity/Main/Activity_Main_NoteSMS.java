@@ -164,26 +164,28 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 
         String defaultTabs = "جستجو,همه";
 
+        String timeRange = preferences.getString("timeRange", "");
+
         String titlesPre = preferences.getString("phoneNum", "");
         String[] titles;
 
+        if (!timeRange.equals(""))
+            defaultTabs += "," + timeRange;
 
-        if (titlesPre.equals(""))
-            titles = defaultTabs.split(",");
-        else {
-            String temp = defaultTabs + "," + titlesPre;
-            titles = temp.split(",");
-        }
+        if (!titlesPre.equals(""))
+            defaultTabs += "," + titlesPre;
 
+        titles = defaultTabs.split(",");
 
         List<Fragment> fragments = new ArrayList<>();
 
         fragments.add(frTab_search.newInstance());
         fragments.add(frTab_item.newInstance("all"));
 
-        if (!titlesPre.equals(""))
+        if (titles.length != 2)
             for (int i = 2; i < titles.length; i++)
                 fragments.add(frTab_item.newInstance(titles[i]));
+
 
         viewPagerAdapterMain = new ViewPagerAdapterMain(getSupportFragmentManager(), fragments, titles);
         vp_viewPager.setAdapter(viewPagerAdapterMain);
@@ -320,7 +322,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
             }
         } else if (requestCode == 2) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-               exportDBToEx();
+                exportDBToEx();
             } else {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("رد کردن دسترسی");

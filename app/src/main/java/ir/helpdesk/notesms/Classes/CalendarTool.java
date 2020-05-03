@@ -276,6 +276,35 @@ public class CalendarTool {
         return (JDN % 7);
     }
 
+    public int getDayOfWeekIran() {
+        int miladiWeek = getDayOfWeek();
+/*
+        String weekDayStr[] = {
+                "دوشنبه",
+                "سه شنبه",
+                "چهارشنبه",
+                "پنجشنبه",
+                "جمعه",
+                "شنبه",
+                "یکشنبه"};
+*/
+        if (miladiWeek == 0)
+            return 2;
+        else if (miladiWeek == 1)
+            return 3;
+        else if (miladiWeek == 2)
+            return 4;
+        else if (miladiWeek == 3)
+            return 5;
+        else if (miladiWeek == 4)
+            return 6;
+        else if (miladiWeek == 5)
+            return 0;
+        else
+            return 1;
+
+    }
+
     /**
      * nextDay:
      * Go to next julian day number (JDN) and adjusts the other dates.

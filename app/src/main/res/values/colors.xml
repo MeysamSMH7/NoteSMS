@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#7a154c</color>
     <color name="colorPrimaryDark">#7a154c</color>
     <color name="colorAccent">#7a154c</color>
@@ -84,7 +85,7 @@
     <color name="colorFinish">#E94335</color>
     <color name="colorNoFinish">#39AB17</color>
 
-    <color name="mdtp_accent_color">#009688</color>
-    <color name="mdtp_accent_color_dark">#00796b</color>
+    <color name="mdtp_accent_color">@color/colorLogo</color>
+    <color name="mdtp_accent_color_dark">@color/colorLogo</color>
 
 </resources>

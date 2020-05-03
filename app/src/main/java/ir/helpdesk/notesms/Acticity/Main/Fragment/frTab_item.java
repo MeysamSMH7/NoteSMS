@@ -9,12 +9,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.apache.poi.ss.formula.functions.T;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ir.helpdesk.notesms.Acticity.Setting.Adapter.onClickInterface;
 import ir.helpdesk.notesms.Acticity.Main.Fragment.Adapter.AdRecycItems;
+import ir.helpdesk.notesms.Classes.CalendarTool;
 import ir.helpdesk.notesms.DataBase.DataSource.tb_BillsDataSource;
+import ir.helpdesk.notesms.DataBase.Structure.tb_BillsStructure;
 import ir.helpdesk.notesms.DataBase.Tables.tb_Bills;
 import ir.helpdesk.notesms.R;
 
@@ -40,11 +44,81 @@ public class frTab_item extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fr_tab_main, container, false);
         tag = getArguments().getString("tag");
-        data = getCustomData(tag);
+
+        if (tag.equals("امروز")) data = getDataWithRangeDate(tag);
+        else if (tag.equals("7 روز گذشته")) data = getDataWithRangeDate(tag);
+        else if (tag.equals("این هفته")) data = getDataWithRangeDate(tag);
+        else if (tag.equals("این ماه")) data = getDataWithRangeDate(tag);
+        else if (tag.equals("30 روز گذشته")) data = getDataWithRangeDate(tag);
+        else
+            data = getCustomData(tag);
         RecyclerView recycle = view.findViewById(R.id.recycle);
         setDataInRecycle(recycle);
 
         return view;
+    }
+
+    private List<tb_Bills> getDataWithRangeDate(String tag) {
+//        ArrayList<tb_Bills> tb_billsList = new ArrayList<>(new
+//                tb_BillsDataSource(getContext()).GetList());
+        ArrayList arrayList = new ArrayList();
+        CalendarTool tool = new CalendarTool();
+
+
+        tool.getDayOfWeek();
+
+//        String todayMiladi = tool.getGregorianDate();
+        String todayMiladi = getMiladiDate(tool.getGregorianDate());
+
+        if (tag.equals("امروز"))
+            arrayList.add(tb_BillsStructure.dateSMSMiladi + "='"
+                    + todayMiladi + "'");
+        else if (tag.equals("7 روز گذشته")) {
+            tool.previousDay(7);
+            arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
+                    getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
+        } else if (tag.equals("30 روز گذشته")) {
+            tool.previousDay(30);
+            arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
+                    getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
+        } else if (tag.equals("این هفته")) {
+            int aa = tool.getDayOfWeekIran();
+            tool.previousDay(aa);
+            arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
+                    getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
+        } else if (tag.equals("این ماه")) {
+            tool.previousDay(tool.getIranianDay()-1);
+            arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
+                    getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
+        }
+
+        return new tb_BillsDataSource(getContext()).SearchArrayList(arrayList);
+
+    }
+
+    private String getMiladiDate(String gregorianDate) {
+
+        String[] date = gregorianDate.split("/");
+
+        CalendarTool tool = new CalendarTool();
+
+        tool.setGregorianDate(Integer.parseInt(date[0]), Integer.parseInt(date[1]),
+                Integer.parseInt(date[2]));
+        String monthMiladi = "";
+        if (!(tool.getGregorianMonth() >= 10))
+            monthMiladi = "0" + tool.getGregorianMonth();
+        else
+            monthMiladi = tool.getGregorianMonth() + "";
+
+        String dayMiladi = "";
+        if (!(tool.getGregorianDay() >= 10))
+            dayMiladi = "0" + tool.getGregorianDay();
+        else
+            dayMiladi = tool.getGregorianDay() + "";
+
+        return tool.getGregorianYear() + "-" + monthMiladi + "-" + dayMiladi + "";
+
+
     }
 
     private void setDataInRecycle(final RecyclerView recycle) {

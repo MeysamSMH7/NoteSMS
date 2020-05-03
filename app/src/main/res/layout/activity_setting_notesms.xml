@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layoutDirection="rtl"
+    android:orientation="vertical"
     tools:context=".Acticity.Setting.Activity_Setting_NoteSMS">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -74,6 +74,53 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:background="@drawable/bg_greywhite_corner"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:layout_marginRight="7dp"
+            android:gravity="right|center"
+            android:text="جدا سازی آماده"
+            android:textColor="@color/colorBlack" />
+
+        <CheckBox
+            android:id="@+id/checkbox_today"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="امروز" />
+
+        <CheckBox
+            android:id="@+id/checkbox_lastWeek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="7 روز گذشته" />
+
+        <CheckBox
+            android:id="@+id/checkbox_thisWeek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="این هفته" />
+
+        <CheckBox
+            android:id="@+id/checkbox_lastMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="30 روز گذشته" />
+
+        <CheckBox
+            android:id="@+id/checkbox_thisMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="این ماه" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnClose"
