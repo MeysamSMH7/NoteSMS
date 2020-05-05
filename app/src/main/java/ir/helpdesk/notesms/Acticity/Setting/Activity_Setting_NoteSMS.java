@@ -35,7 +35,7 @@ import ir.helpdesk.notesms.R;
 
 public class Activity_Setting_NoteSMS extends AppCompatActivity {
 
-    private  Context context = this;
+    private Context context = this;
     private AlertDialog alertDialogFilterPhone;
     private AdRecyclFilterPhoneCheckBox adRecycPopUp;
     private androidx.appcompat.widget.SearchView editsearchSearchView;
@@ -73,7 +73,7 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                checkBoxWeeks();
             }
         });
 

@@ -211,7 +211,7 @@ public class frTab_search extends Fragment {
         adapter = new AdRecycItems(getContext(), list, new onClickInterface() {
             @Override
             public void setClick(int position, View view, String id) {
-                adapter.notifyDataSetChanged();
+                doSearch();
 
             }
         });

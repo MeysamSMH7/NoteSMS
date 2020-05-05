@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -43,7 +44,25 @@ public class frTab_item extends Fragment {
                              @Nullable final ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fr_tab_main, container, false);
+        TextView txtNoData = view.findViewById(R.id.txtNoData);
+        RecyclerView recycle = view.findViewById(R.id.recycle);
         tag = getArguments().getString("tag");
+
+        getData();
+
+        if (data.size() == 0) {
+            txtNoData.setVisibility(View.VISIBLE);
+            recycle.setVisibility(View.GONE);
+        } else {
+            txtNoData.setVisibility(View.GONE);
+            recycle.setVisibility(View.VISIBLE);
+            setDataInRecycle(recycle);
+        }
+
+        return view;
+    }
+
+    private void getData() {
 
         if (tag.equals("امروز")) data = getDataWithRangeDate(tag);
         else if (tag.equals("7 روز گذشته")) data = getDataWithRangeDate(tag);
@@ -52,10 +71,7 @@ public class frTab_item extends Fragment {
         else if (tag.equals("30 روز گذشته")) data = getDataWithRangeDate(tag);
         else
             data = getCustomData(tag);
-        RecyclerView recycle = view.findViewById(R.id.recycle);
-        setDataInRecycle(recycle);
 
-        return view;
     }
 
     private List<tb_Bills> getDataWithRangeDate(String tag) {
@@ -70,20 +86,17 @@ public class frTab_item extends Fragment {
             tool.previousDay(7);
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
                     getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
-        }
-        else if (tag.equals("30 روز گذشته")) {
+        } else if (tag.equals("30 روز گذشته")) {
             tool.previousDay(30);
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
                     getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
-        }
-        else if (tag.equals("این هفته")) {
+        } else if (tag.equals("این هفته")) {
             int aa = tool.getDayOfWeekIran();
             tool.previousDay(aa);
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
                     getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
-        }
-        else if (tag.equals("این ماه")) {
-            tool.previousDay(tool.getIranianDay()-1);
+        } else if (tag.equals("این ماه")) {
+            tool.previousDay(tool.getIranianDay() - 1);
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
                     getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
         }
@@ -122,7 +135,7 @@ public class frTab_item extends Fragment {
                 new onClickInterface() {
                     @Override
                     public void setClick(int position, View view, final String id) {
-                        data = getCustomData(tag);
+                        getData();
                         setDataInRecycle(recycle);
                     }
                 });
