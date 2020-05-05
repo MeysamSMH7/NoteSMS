@@ -35,7 +35,7 @@
             android:layout_height="0dp"
             android:layout_weight="0.5"
             android:gravity="right|center"
-            android:text="اصافی کردن\nجدا سازی شماره های دلخواه."
+            android:text="صافی کردن\nجدا سازی شماره های دلخواه."
             android:textColor="@color/colorBlack" />
 
 
@@ -61,7 +61,7 @@
             android:layout_height="0dp"
             android:layout_weight="0.5"
             android:gravity="right|center"
-            android:text="یادداشت سریع (درحال حافصر غیر فعال میباشد)\nفعال یا غیر فعال کردن یادداشت سریع برای شماره ی دلخواه"
+            android:text="یادداشت سریع (درحال حاضر غیر فعال میباشد)\nفعال یا غیر فعال کردن یادداشت سریع برای شماره های دلخواه"
             android:textColor="@color/colorBlack" />
 
 
@@ -89,6 +89,12 @@
             android:gravity="right|center"
             android:text="جدا سازی آماده"
             android:textColor="@color/colorBlack" />
+
+        <CheckBox
+            android:id="@+id/checkbox_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="همه" />
 
         <CheckBox
             android:id="@+id/checkbox_today"
@@ -121,6 +127,7 @@
             android:text="این ماه" />
 
     </LinearLayout>
+
 
     <Button
         android:id="@+id/btnClose"

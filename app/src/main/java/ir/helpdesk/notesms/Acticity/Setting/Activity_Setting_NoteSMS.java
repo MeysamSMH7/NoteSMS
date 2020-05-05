@@ -34,20 +34,15 @@ import ir.helpdesk.notesms.DataBase.Tables.tb_Bills;
 import ir.helpdesk.notesms.R;
 
 public class Activity_Setting_NoteSMS extends AppCompatActivity {
-    Context context = this;
-    //----------------- filter
+
+    private  Context context = this;
     private AlertDialog alertDialogFilterPhone;
     private AdRecyclFilterPhoneCheckBox adRecycPopUp;
     private androidx.appcompat.widget.SearchView editsearchSearchView;
     private List<ModFilterPhone> arraylistSearchView = new ArrayList<ModFilterPhone>();
     private ArrayList<tb_Bills> tb_billsList;
     private SharedPreferences preferences;
-
-    @Override
-    public void onBackPressed() {
-        finish();
-        startActivity(new Intent(Activity_Setting_NoteSMS.this, Activity_Main_NoteSMS.class));
-    }
+    private AlertDialog alertDialogLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,14 +73,7 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertDialogLoading.show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                        startActivity(new Intent(Activity_Setting_NoteSMS.this, Activity_Main_NoteSMS.class));
-                    }
-                }, 2000);
+
             }
         });
 
@@ -101,12 +89,14 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
         final CheckBox checkbox_thisWeek = findViewById(R.id.checkbox_thisWeek);
         final CheckBox checkbox_thisMonth = findViewById(R.id.checkbox_thisMonth);
         final CheckBox checkbox_lastMonth = findViewById(R.id.checkbox_lastMonth);
+        final CheckBox checkbox_all = findViewById(R.id.checkbox_all);
 
         checkbox_today.setChecked(false);
         checkbox_lastWeek.setChecked(false);
         checkbox_thisWeek.setChecked(false);
         checkbox_thisMonth.setChecked(false);
         checkbox_lastMonth.setChecked(false);
+        checkbox_all.setChecked(false);
 
         final String timeRange = preferences.getString("timeRange", "");
         String[] titles = timeRange.split(",");
@@ -118,6 +108,7 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
                 else if (tag.equals("این هفته")) checkbox_thisWeek.setChecked(true);
                 else if (tag.equals("این ماه")) checkbox_thisMonth.setChecked(true);
                 else if (tag.equals("30 روز گذشته")) checkbox_lastMonth.setChecked(true);
+                else if (tag.equals("همه")) checkbox_all.setChecked(true);
 
             }
 
@@ -151,6 +142,13 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
                 getDataFromCheckBox(isChecked, checkbox_lastMonth);
             }
         });
+        checkbox_all.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Toast.makeText(context, "درصورت عدم انتخاب هیچ گزینه ای، به صورت پیشرفرض تمامی پیامک ها برای شما نمایش خواهد داده شد", Toast.LENGTH_SHORT).show();
+                getDataFromCheckBox(isChecked, checkbox_all);
+            }
+        });
 
 
     }
@@ -160,20 +158,13 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
         final String titlePH = checkbox.getText().toString();
         final String titles = preferences.getString("timeRange", "");
         if (isChecked) {
-            if (!titles.contains(titlePH)) {
-                if (!titlePH.equals("") && !titles.contains(titlePH)) {
-                    SharedPreferences.Editor editor = preferences.edit();
-                    if (titles.equals("")) {
-                        editor.putString("timeRange", titlePH);
-                    } else {
-                        editor.putString("timeRange", titles + "," + titlePH);
-                    }
-                    editor.apply();
-
-                } else
-                    Toast.makeText(context, "این رو قبلا زدی", Toast.LENGTH_SHORT).show();
-            } else
-                Toast.makeText(context, "چنین شماره ای وجود داره", Toast.LENGTH_SHORT).show();
+            SharedPreferences.Editor editor = preferences.edit();
+            if (titles.equals("")) {
+                editor.putString("timeRange", titlePH);
+            } else {
+                editor.putString("timeRange", titles + "," + titlePH);
+            }
+            editor.apply();
         } else {
             final String[] titles2 = preferences.getString("timeRange", "").split(",");
             String temp = "";
@@ -194,7 +185,7 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
             editor.apply();
         }
 
- }
+    }
 
     private void alertDialogFilterPhone() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -256,7 +247,6 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
                 final CheckBox txttitle = ((LinearLayout) view).findViewById(R.id.checkboxTitle);
                 TextView txtId = ((LinearLayout) view).findViewById(R.id.txtId);
 
-
                 txttitle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -290,8 +280,6 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
 
     }
 
-    private AlertDialog alertDialogLoading;
-
     private void loading() {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -307,5 +295,21 @@ public class Activity_Setting_NoteSMS extends AppCompatActivity {
         }
     }
 
+    private void checkIfOneTabIsOk() {
+        alertDialogLoading.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+                startActivity(new Intent(Activity_Setting_NoteSMS.this, Activity_Main_NoteSMS.class));
+            }
+        }, 2000);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        checkIfOneTabIsOk();
+    }
 
 }

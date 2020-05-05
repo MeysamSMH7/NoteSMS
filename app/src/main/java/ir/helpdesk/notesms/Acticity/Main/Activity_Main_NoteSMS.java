@@ -112,14 +112,6 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         else
             getSMSFromInbox();
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            String requiredPermission = android.Manifest.permission.SEND_SMS;
-            int checkVal = checkCallingOrSelfPermission(requiredPermission);
-            if (checkVal == PackageManager.PERMISSION_GRANTED) {
-                getSMSFromInbox();
-            }
-        }
-
     }
 
     private void findViews() {
@@ -128,6 +120,13 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 
         tl_tabLayout = findViewById(R.id.tl_tabLayout);
         vp_viewPager = findViewById(R.id.vp_viewPager);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        String temp = preferences.getString("timeRange", "");
+        String temp2 = preferences.getString("phoneNum", "");
+        if (temp.equals("") && temp2.equals(""))
+            editor.putString("timeRange", "همه");
+        editor.apply();
     }
 
     protected void changeTabsFont(TabLayout tabLayout) {
@@ -162,7 +161,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 
         tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());
 
-        String defaultTabs = "جستجو,همه";
+        String defaultTabs = "جستجو";
 
         String timeRange = preferences.getString("timeRange", "");
 
@@ -180,10 +179,9 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
         List<Fragment> fragments = new ArrayList<>();
 
         fragments.add(frTab_search.newInstance());
-        fragments.add(frTab_item.newInstance("all"));
 
-        if (titles.length != 2)
-            for (int i = 2; i < titles.length; i++)
+        if (titles.length != 1)
+            for (int i = 1; i < titles.length; i++)
                 fragments.add(frTab_item.newInstance(titles[i]));
 
 
@@ -387,6 +385,7 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 
     public void getSMSFromInbox() {
         alertDialogLoading.show();
+        Toast.makeText(context, "درحال دریافت اطلاعت", Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -400,16 +399,22 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
 
                 tb_BillsDataSource source = new tb_BillsDataSource(context);
 
-                int counter = 0;
                 boolean ifBreak = false;
+                tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());
 
                 if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
                 do {
                     String typeee = smsInboxCursor.getString(type);
                     if (typeee.equals("1")) {
                         String key = smsInboxCursor.getString(date);
-                        Date smsDayTime = new Date(Long.valueOf(key));
 
+                        if (tb_billsList.size() != 0)
+                            if (key.equals(tb_billsList.get(0).PK_key))
+                                ifBreak = true;
+                        if (ifBreak)
+                            break;
+
+                        Date smsDayTime = new Date(Long.valueOf(key));
 //                Log.i("ASDF =========> ", smsInboxCursor.getString(indexAddress) + "");
 //                String str = "SMS From: " + smsInboxCursor.getString(indexAddress) +
 //                        "\n" + smsInboxCursor.getString(indexBody) +
@@ -433,17 +438,6 @@ public class Activity_Main_NoteSMS extends AppCompatActivity implements Navigati
                         tb_bills.dateNoteMiladi = "";
                         tb_bills.dateNoteJalali = "";
                         tb_bills.temp = "";
-
-                        if (counter == 0) {
-                            tb_billsList = new ArrayList<>(new tb_BillsDataSource(context).GetList());
-                            if (tb_billsList.size() != 0)
-                                if (key.equals(tb_billsList.get(0).PK_key))
-                                    ifBreak = true;
-                        }
-                        counter++;
-
-                        if (ifBreak)
-                            break;
 
                         if (source.isARecordExist(key))
                             source.Add(tb_bills);

@@ -59,34 +59,30 @@ public class frTab_item extends Fragment {
     }
 
     private List<tb_Bills> getDataWithRangeDate(String tag) {
-//        ArrayList<tb_Bills> tb_billsList = new ArrayList<>(new
-//                tb_BillsDataSource(getContext()).GetList());
         ArrayList arrayList = new ArrayList();
         CalendarTool tool = new CalendarTool();
 
-
-        tool.getDayOfWeek();
-
-//        String todayMiladi = tool.getGregorianDate();
         String todayMiladi = getMiladiDate(tool.getGregorianDate());
 
         if (tag.equals("امروز"))
-            arrayList.add(tb_BillsStructure.dateSMSMiladi + "='"
-                    + todayMiladi + "'");
+            arrayList.add(tb_BillsStructure.dateSMSMiladi + "='" + todayMiladi + "'");
         else if (tag.equals("7 روز گذشته")) {
             tool.previousDay(7);
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
                     getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
-        } else if (tag.equals("30 روز گذشته")) {
+        }
+        else if (tag.equals("30 روز گذشته")) {
             tool.previousDay(30);
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
                     getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
-        } else if (tag.equals("این هفته")) {
+        }
+        else if (tag.equals("این هفته")) {
             int aa = tool.getDayOfWeekIran();
             tool.previousDay(aa);
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
                     getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
-        } else if (tag.equals("این ماه")) {
+        }
+        else if (tag.equals("این ماه")) {
             tool.previousDay(tool.getIranianDay()-1);
             arrayList.add(tb_BillsStructure.dateSMSMiladi + " BETWEEN '" +
                     getMiladiDate(tool.getGregorianDate()) + "' AND '" + todayMiladi + "'");
@@ -134,12 +130,11 @@ public class frTab_item extends Fragment {
         adRecycItems.notifyDataSetChanged();
     }
 
-
     private ArrayList<tb_Bills> getCustomData(String phoneNum) {
         ArrayList<tb_Bills> tb_billsList = new ArrayList<>(new
                 tb_BillsDataSource(getContext()).GetList());
 
-        if (tag.equals("all"))
+        if (tag.equals("همه"))
             return tb_billsList;
 
         ArrayList<tb_Bills> bills = new ArrayList<>();
